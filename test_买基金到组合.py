@@ -1,3 +1,4 @@
+import os
 import time
 from urllib.parse import urljoin
 
@@ -29,15 +30,15 @@ class Test_buy_fund_to_Sub():
     def test_Trade_FundTrade_CommitOrder(self):
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/CommitOrder")
         datas = {
-            "Password": "20844b35051140544663100b9f4035c2",
-            "TradeType": "AsyC022",
+            "Password": read_yaml1()[read_yaml4()["Pas"]],
+            "TradeType": read_yaml4()["TradeType"],
             "UserId": read_yaml2()["CustomerNo"],
             "BankAccountNo": read_yaml2()["BankAccountNo"],
             "CouponsType": "",
             "CouponsId": "",
             "FundCode": "000001",
             "TotalAmounts": 10.00,
-            "FundAppsJson": "[{\"fundCode\":\"000001\",\"amount\":\"100000.00\"}]",
+            "FundAppsJson": read_yaml4()["FundAppsJson"],
             "TraceID": read_yaml3()["TraceID"],
             "RecommanderNo": "",
             "SubAccountNo": read_yaml2()["SubAccountNo"],
@@ -71,8 +72,7 @@ class Test_buy_fund_to_Sub():
                 assert True
             else:
                 assert False, '登录状态已过期，请重新登录'
-
-        time.sleep(2)
+        time.sleep(5)
 
     @allure.story('买基金到组合结果页 /Trade/FundTrade/OrderResult')
     def test_Trade_FundTrade_OrderResult(self):
@@ -114,4 +114,13 @@ class Test_buy_fund_to_Sub():
                 if PayError == '1':
                     assert False, '错误原因：账户余额不足'
                 else:
-                    assert False
+                    if PayError == '2':
+                        assert False, '失败[此账户余额不足,去验证]'
+                    else:
+                        assert False
+
+
+if __name__ == "__main__":
+    pytest.main(['-s', '[test_买基金到组合.py]', '--clean-alluredir', '--alluredir', './report/tmp'])
+    os.system('allure generate ./report/tmp -0 ./reports --clean')
+
