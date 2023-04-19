@@ -98,6 +98,7 @@ class Test_buy_Sub():
         res = requests.request(method='post', url=url, params=datas)
         ErrorCode = res.json()["ErrorCode"]
         PayError = res.json()["Data"]["PayError"]
+        ErrorMessage = res.json()["Data"]["ListTips"][0]["ThirdTitle"]
         """
         write_yaml3({"PayError": PayError})
         """
@@ -115,13 +116,7 @@ class Test_buy_Sub():
             if PayError == '':
                 assert True, '买组合成功'
             else:
-                if PayError == '1':
-                    assert False, '错误原因：账户余额不足'
-                else:
-                    if PayError == '2':
-                        assert False, '失败[此账户余额不足,去验证]'
-                    else:
-                        assert False
+                assert False, ErrorMessage
 
 
 @allure.feature('买组合 660以下免密')
@@ -212,6 +207,7 @@ class Test_buy_Sub_NP():
         res = requests.request(method='post', url=url, params=datas)
         ErrorCode = res.json()["ErrorCode"]
         PayError = res.json()["Data"]["PayError"]
+        ErrorMessage = res.json()["Data"]["ListTips"][0]["ThirdTitle"]
         """
         write_yaml3({"PayError": PayError})
         """
@@ -229,10 +225,4 @@ class Test_buy_Sub_NP():
             if PayError == '':
                 assert True, '买组合成功'
             else:
-                if PayError == '1':
-                    assert False, '错误原因：账户余额不足'
-                else:
-                    if PayError == '2':
-                        assert False, '失败[此账户余额不足,去验证]'
-                    else:
-                        assert False
+                assert False, ErrorMessage
