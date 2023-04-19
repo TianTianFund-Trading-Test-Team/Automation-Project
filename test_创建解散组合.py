@@ -38,6 +38,33 @@ class Test_Create_and_Disband_SubAccount():
             else:
                 assert False, ErrorMessage
 
+    @allure.story('验证名称是否正常 旧版 /User/SubAccount/VerifySubAccountName')
+    # 验证组合名称 旧版
+    def test_User_SubAccount_VerifySubAccountName(self):
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubAccount/VerifySubAccountName")
+        datas = {
+            "SubAccountName": read_yaml4()["Name"],
+
+            "PhoneType": "IPhone",
+            "ServerVersion": "6.5.8",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"],
+            "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        IsValid = res.json()["Data"]["IsValid"]
+        ErrorMessage = res.json()["Data"]["ErrorMessage"]
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+            else:
+                assert False, '接口状态码非200'
+        with allure.step('名称是否正常'):
+            if IsValid == True:
+                assert True, '名称正常'
+            else:
+                assert False, ErrorMessage
+
     @allure.story('选择投资风格 /User/SubAccount/SubAccountPropertyStyle')
     # 选择投资风格
     def test_User_SubAccount_SubAccountPropertyStyle(self):

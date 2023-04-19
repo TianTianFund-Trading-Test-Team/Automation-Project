@@ -401,6 +401,102 @@ class Test_SubAccount_SubAValuationProfit():
                 assert False, '接口状态码非200'
 
 
+@allure.feature('组合分红')
+class Test_SubAccount_Dividend():
+    @allure.story('组合列表 /User/SubA/SubAList')
+    # 组合估值
+    def test_User_SubA_SubAList(self):
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/SubAList")
+        datas = {
+            "UserId": read_yaml2()["CustomerNo"],
+            "SubAccountNo": read_yaml2()["SubAccountNo"],
+            "FundCode": "",
+            "SubType": "",  # 不传返回全部，-1 去除慧定投， -2 去除组合宝
+
+            "PhoneType": "IPhone",
+            "ServerVersion": "6.5.8",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"],
+            "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+            else:
+                assert False, '接口状态码非200'
+
+    @allure.story('组合分红 Trade/FundTrade/PagedDividendMethodsOverview')
+    # 组合分红
+    def test_Trade_FundTrade_PagedDividendMethodsOverview(self):
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "Trade/FundTrade/PagedDividendMethodsOverview")
+        datas = {
+            "UserId": read_yaml2()["CustomerNo"],
+            "SubAccountNo": read_yaml2()["SubAccountNo"],
+            "FundCode": "",
+            "SearchMainAccount": "0",
+            "MethodType": "2",
+            "PageNo": 1,
+            "PageSize": 100,
+
+            "PhoneType": "IPhone",
+            "ServerVersion": "6.5.8",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"],
+            "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+            else:
+                assert False, '接口状态码非200'
+
+    @allure.story('组合列表 旧版 /User/Home/GetDividendsList')
+    # 组合估值
+    def test_User_Home_GetDividendsList(self):
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/Home/GetDividendsList")
+        datas = {
+            "UserId": read_yaml2()["CustomerNo"],
+            "SubAccountNo": read_yaml2()["SubAccountNo"],
+            "FundCode": "",
+
+            "PhoneType": "IPhone",
+            "ServerVersion": "6.5.8",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"],
+            "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+            else:
+                assert False, '接口状态码非200'
+
+    @allure.story('组合分红 旧版 Trade/FundTrade/DividendMethodsOverView')
+    # 组合分红 旧版
+    def test_Trade_FundTrade_DividendMethodsOverview(self):
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "Trade/FundTrade/DividendMethodsOverView")
+        datas = {
+            "UserId": read_yaml2()["CustomerNo"],
+            "SubAccountNo": read_yaml2()["SubAccountNo"],
+            "FundCode": "",
+
+            "PhoneType": "IPhone",
+            "ServerVersion": "6.5.8",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"],
+            "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+            else:
+                assert False, '接口状态码非200'
+
+
 @allure.feature('其余组合相关接口')
 class Test_SubAccount_SubAValuationProfit():
     @allure.story('组合历史净值 /User/SubA/SubAProfit')
@@ -412,6 +508,48 @@ class Test_SubAccount_SubAValuationProfit():
             "SubAccountNo": read_yaml2()["SubAccountNo"],
             "IntervalType": 9,  # 0 累计收益； 1 单位净值
             "DataType": 1,
+
+            "PhoneType": "IPhone",
+            "ServerVersion": "6.5.8",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"],
+            "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+            else:
+                assert False, '接口状态码非200'
+
+    @allure.story('组合买持有列表 /User/SubA/SubAPurchaseOverview')
+    # 组合买持有列表
+    def test_User_SubA_SubAPurchaseOverview(self):
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/SubAPurchaseOverview")
+        datas = {
+            "UserId": read_yaml2()["CustomerNo"],
+            "SubAccountNo": read_yaml2()["SubAccountNo"],
+
+            "PhoneType": "IPhone",
+            "ServerVersion": "6.5.8",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"],
+            "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+            else:
+                assert False, '接口状态码非200'
+
+    @allure.story('组合定投持有列表 /User/SubA/SubPurchaseDetail')
+    # 组合定投持有列表
+    def test_User_SubA_SubPurchaseDetail(self):
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/SubPurchaseDetail")
+        datas = {
+            "UserId": read_yaml2()["CustomerNo"],
+            "SubAccountNo": read_yaml2()["SubAccountNo"],
 
             "PhoneType": "IPhone",
             "ServerVersion": "6.5.8",
