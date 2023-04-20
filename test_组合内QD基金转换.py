@@ -14,6 +14,7 @@ class Test_redeem_QDFund_Sub():
     @allure.story('子账户持仓 /User/Asset/GetFundAssetListOfSubV2')
     # 获取子账户持仓 QD型
     def test_User_Asset_GetFundAssetListOfSubV2(self):
+        clear_yaml3()
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/Asset/GetFundAssetListOfSubV2")
         datas = {
             "UserId": read_yaml2()["CustomerNo"],
@@ -78,13 +79,16 @@ class Test_redeem_QDFund_Sub():
                     assert True
                 else:
                     assert False, '接口状态码非200'
-            for i in range(3):
-                if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 14:
-                    AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                    ShareId = res.json()["Data"]["Shares"][i-1]["ShareId"]
-                    write_yaml3({"ShareId": ShareId})
-                    write_yaml3({"AvailableShare": AvailableShare})
-                    break
+            with allure.step('是否存在份额可以QD转换'):
+                for i in range(3):
+                    if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 14:
+                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                        write_yaml3({"ShareId": ShareId})
+                        write_yaml3({"AvailableShare": AvailableShare})
+                        break
+                if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
+                    clear_yaml3()
 
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕

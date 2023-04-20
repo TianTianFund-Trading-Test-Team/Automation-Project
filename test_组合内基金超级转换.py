@@ -12,8 +12,9 @@ from conftest import read_yaml2, write_yaml2, write_yaml3, read_yaml3, clear_yam
 @allure.feature('组合内基金超级转换 815')
 class Test_CJZH_Sub():
     @allure.story('子账户持仓 /User/Asset/GetFundAssetListOfSubV2')
-    # 获取子账户持仓 QD型
+    # 获取子账户持仓 HH型
     def test_User_Asset_GetFundAssetListOfSubV2(self):
+        clear_yaml3()
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/Asset/GetFundAssetListOfSubV2")
         datas = {
             "UserId": read_yaml2()["CustomerNo"],
@@ -36,7 +37,6 @@ class Test_CJZH_Sub():
         Res = res.json()["Data"]["AssetDetails"]
         with allure.step('组合里是否有HH基金'):
             if Res == []:
-                clear_yaml3()
                 assert False, '组合内没有HH基金'
             else:
                 assert True

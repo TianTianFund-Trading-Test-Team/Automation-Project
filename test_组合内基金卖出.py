@@ -240,7 +240,7 @@ class Test_redeem_Fund_Sub():
     @allure.story('卖组合单基金极速回活期宝 免密 /Business/Home/SFTransferNP')
     # 卖组合单基金极速回活期宝 免密
     def test_Business_Home_SFTransferNP(self):
-        time.sleep(2)
+        time.sleep(5)
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Business/Home/SFTransferNP")
         datas = {
             "UserId": read_yaml2()["CustomerNo"],
