@@ -116,8 +116,148 @@ class Test_Create_and_Disband_SubAccount():
                 clear_yaml3()
                 write_yaml3({"subAccountNo": subAccountNo})
             else:
-                assert False, ErrorMessage
                 clear_yaml3()
+                assert False, ErrorMessage
+
+    @allure.story('修改组合名称 /User/SubA/UpdateSubANP')
+    # 修改组合名称
+    def test_User_SubA_UpdateSubANP(self):
+        if read_yaml3() is None:
+            pytest.skip(), '创建组合失败，无法修改组合信息'
+        else:
+            url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/UpdateSubANP")
+            datas = {
+                "UserId": read_yaml2()["CustomerNo"],
+                "SubAccountNo": read_yaml3()["subAccountNo"],
+                "ShutDownSubAccount": "false",
+                "UpdateName": "Name",
+                "UpdateValue": read_yaml4()["Name_EX"],
+                "PrivacyMode": "",
+
+                "PhoneType": "IPhone",
+                "ServerVersion": "6.5.8",
+                "CToken": read_yaml2()["CToken"],
+                "UToken": read_yaml2()["UToken"],
+                "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+            }
+            res = requests.request(method='post', url=url, params=datas)
+            ErrorCode = res.json()["ErrorCode"]
+            ErrorMessage = res.json()["ErrorMessage"]
+            with allure.step('接口是否正常调通'):
+                if res.status_code == 200:
+                    assert True
+                else:
+                    assert False, '接口状态码非200'
+            with allure.step('修改组合名称是否成功'):
+                if ErrorCode == 0:
+                    assert True, '修改组合名称成功'
+                else:
+                    assert False, ErrorMessage
+
+    @allure.story('修改组合个性标签 /User/SubA/UpdateSubANP')
+    # 修改组合个性标签
+    def test_User_SubA_UpdateSubANP2(self):
+        if read_yaml3() is None:
+            pytest.skip(), '创建组合失败，无法修改组合信息'
+        else:
+            url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/UpdateSubANP")
+            datas = {
+                "UserId": read_yaml2()["CustomerNo"],
+                "SubAccountNo": read_yaml3()["subAccountNo"],
+                "ShutDownSubAccount": "false",
+                "UpdateName": "Property",
+                "UpdateValue": read_yaml4()["Property"],
+                "PrivacyMode": "",
+
+                "PhoneType": "IPhone",
+                "ServerVersion": "6.5.8",
+                "CToken": read_yaml2()["CToken"],
+                "UToken": read_yaml2()["UToken"],
+                "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+            }
+            res = requests.request(method='post', url=url, params=datas)
+            ErrorCode = res.json()["ErrorCode"]
+            ErrorMessage = res.json()["ErrorMessage"]
+            with allure.step('接口是否正常调通'):
+                if res.status_code == 200:
+                    assert True
+                else:
+                    assert False, '接口状态码非200'
+            with allure.step('修改组合标签是否成功'):
+                if ErrorCode == 0:
+                    assert True, '修改组合标签成功'
+                else:
+                    assert False, ErrorMessage
+
+    @allure.story('修改组合风格 /User/SubA/UpdateSubANP')
+    # 修改组合风格
+    def test_User_SubA_UpdateSubANP3(self):
+        if read_yaml3() is None:
+            pytest.skip(), '创建组合失败，无法修改组合信息'
+        else:
+            url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/UpdateSubANP")
+            datas = {
+                "UserId": read_yaml2()["CustomerNo"],
+                "SubAccountNo": read_yaml3()["subAccountNo"],
+                "ShutDownSubAccount": "false",
+                "UpdateName": "Style",
+                "UpdateValue": read_yaml4()["Style"],
+                "PrivacyMode": "",
+
+                "PhoneType": "IPhone",
+                "ServerVersion": "6.5.8",
+                "CToken": read_yaml2()["CToken"],
+                "UToken": read_yaml2()["UToken"],
+                "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+            }
+            res = requests.request(method='post', url=url, params=datas)
+            ErrorCode = res.json()["ErrorCode"]
+            ErrorMessage = res.json()["ErrorMessage"]
+            with allure.step('接口是否正常调通'):
+                if res.status_code == 200:
+                    assert True
+                else:
+                    assert False, '接口状态码非200'
+            with allure.step('修改组合风格是否成功'):
+                if ErrorCode == 0:
+                    assert True, '修改组合风格成功'
+                else:
+                    assert False, ErrorMessage
+
+    @allure.story('修改组合投资理念 /User/SubA/UpdateSubANP')
+    # 修改组合投资理念
+    def test_User_SubA_UpdateSubANP4(self):
+        if read_yaml3() is None:
+            pytest.skip(), '创建组合失败，无法修改组合信息'
+        else:
+            url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/UpdateSubANP")
+            datas = {
+                "UserId": read_yaml2()["CustomerNo"],
+                "SubAccountNo": read_yaml3()["subAccountNo"],
+                "ShutDownSubAccount": "false",
+                "UpdateName": "Idea",
+                "UpdateValue": read_yaml4()["Idea"],
+                "PrivacyMode": "",
+
+                "PhoneType": "IPhone",
+                "ServerVersion": "6.5.8",
+                "CToken": read_yaml2()["CToken"],
+                "UToken": read_yaml2()["UToken"],
+                "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+            }
+            res = requests.request(method='post', url=url, params=datas)
+            ErrorCode = res.json()["ErrorCode"]
+            ErrorMessage = res.json()["ErrorMessage"]
+            with allure.step('接口是否正常调通'):
+                if res.status_code == 200:
+                    assert True
+                else:
+                    assert False, '接口状态码非200'
+            with allure.step('修改组合投资理念是否成功'):
+                if ErrorCode == 0:
+                    assert True, '修改组合投资理念成功'
+                else:
+                    assert False, ErrorMessage
 
     @allure.story('解散组合 /User/SubA/DisbandSubA')
     # 解散组合
@@ -151,6 +291,3 @@ class Test_Create_and_Disband_SubAccount():
                     clear_yaml3()
                 else:
                     assert False, ErrorMessage
-
-
-

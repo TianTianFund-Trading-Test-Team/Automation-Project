@@ -42,7 +42,7 @@ class Test_redeem_Sub():
             "UserId": read_yaml2()["CustomerNo"],
             "SubAccountNo": read_yaml2()["SubAccountNo"],
             "Type": read_yaml4()["Type"],  # 回银行卡 1   回活期宝 2
-            "ObjectFundCode": read_yaml1()["FundCode_HQB_ZHM"],  # 活期宝基金代码,不传回银行卡
+            "ObjectFundCode": read_yaml4()["FundCode_HQB_ZHM"],  # 活期宝基金代码,不传回银行卡
             "Percent": read_yaml4()["Percent"],
             "IsCustomizeRatio": 0,
             "FundAppsJson": "",
@@ -75,7 +75,7 @@ class Test_redeem_Sub():
             "UserId": read_yaml2()["CustomerNo"],
             "SubAccountNo": read_yaml2()["SubAccountNo"],
             "Type": read_yaml4()["Type"],  # 回银行卡 1   回活期宝 2
-            "ObjectFundCode": read_yaml1()["FundCode_HQB_ZHM"],  # 活期宝基金代码，不传回银行卡
+            "ObjectFundCode": read_yaml4()["FundCode_HQB_ZHM"],  # 活期宝基金代码，不传回银行卡
             "Percent": read_yaml4()["Percent"],
             "IsCustomizeRatio": 0,
             "FundAppsJson": "",
