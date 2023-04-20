@@ -16,4 +16,4 @@ write_yaml()  写入到yaml文件  目前配置了写入2，3。常用的只有write_yaml3(),不要使
 
 eg.  我后面的函数需要TraceID，write_yaml3({"TraceID": TraceID}) 后一个是接口返回的值
 
-clean_yaml3()  目前只有清空3 直接调用即可
+clear_yaml3()  目前只有清空3 直接调用即可
