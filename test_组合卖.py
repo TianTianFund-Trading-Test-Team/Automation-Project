@@ -33,16 +33,16 @@ class Test_redeem_Sub():
             else:
                 assert False, '接口状态码非200'
 
-    @allure.story('等比例卖出组合回活期宝 /User/SubA/SubARatioRedeemCards')
-    # 等比例卖出组合回活期宝
+    @allure.story('等比例卖出组合 /User/SubA/SubARatioRedeemCards')
+    # 等比例卖出组合
     def test_User_SubA_SubARatioRedeemCards(self):
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/SubARatioRedeemCards")
         datas = {
             "Password": read_yaml1()[read_yaml4()["Pas"]],
             "UserId": read_yaml2()["CustomerNo"],
             "SubAccountNo": read_yaml2()["SubAccountNo"],
-            "Type": "2",
-            "ObjectFundCode": "340005",  # 活期宝基金代码
+            "Type": read_yaml4()["Type"],  # 回银行卡 1   回活期宝 2
+            "ObjectFundCode": read_yaml1()["FundCode_HQB_ZHM"],  # 活期宝基金代码,不传回银行卡
             "Percent": read_yaml4()["Percent"],
             "IsCustomizeRatio": 0,
             "FundAppsJson": "",
@@ -67,15 +67,15 @@ class Test_redeem_Sub():
             else:
                 assert False, ErrorMessage
 
-    @allure.story('等比例卖出组合回活期宝 免密 /User/SubA/SubARatioRedeemCardsNP')
-    # 等比例卖出组合回活期宝 免密
+    @allure.story('等比例卖出组合 免密 /User/SubA/SubARatioRedeemCardsNP')
+    # 等比例卖出组合 免密
     def test_User_SubA_SubARatioRedeemCardsNP(self):
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/SubARatioRedeemCardsNP")
         datas = {
             "UserId": read_yaml2()["CustomerNo"],
             "SubAccountNo": read_yaml2()["SubAccountNo"],
-            "Type": "2",
-            "ObjectFundCode": "340005",  # 活期宝基金代码
+            "Type": read_yaml4()["Type"],  # 回银行卡 1   回活期宝 2
+            "ObjectFundCode": read_yaml1()["FundCode_HQB_ZHM"],  # 活期宝基金代码，不传回银行卡
             "Percent": read_yaml4()["Percent"],
             "IsCustomizeRatio": 0,
             "FundAppsJson": "",
@@ -99,6 +99,3 @@ class Test_redeem_Sub():
                 assert True
             else:
                 assert False, ErrorMessage
-
-
-
