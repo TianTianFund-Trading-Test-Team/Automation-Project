@@ -142,7 +142,7 @@ class Test_redeem_Fund_Sub():
 
 
 @allure.feature('组合内基金卖出极速回活期宝 815 ')
-class Test_redeem_Fund_Sub():
+class Test_Quick_redeem_Fund_Sub():
     @allure.story('子账户持仓 /User/Asset/GetFundAssetListOfSubV2')
     # 获取子账户持仓 混合型
     def test_User_Asset_GetFundAssetListOfSubV2(self):
@@ -193,10 +193,18 @@ class Test_redeem_Fund_Sub():
                 assert True
             else:
                 assert False, '接口状态码非200'
-        ShareId = res.json()["Data"]["Shares"][0]["ShareId"]
-        AvailableShare = res.json()["Data"]["Shares"][0]["AvailableShare"]
-        write_yaml3({"ShareId": ShareId})
-        write_yaml3({"AvailableShare": AvailableShare})
+        with allure.step('选择大于10份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+            for i in range(5):
+                try:
+                    if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 10:
+                        assert True
+                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                        write_yaml3({"ShareId": ShareId})
+                        write_yaml3({"AvailableShare": AvailableShare})
+                        break
+                except IndexError:
+                    pass
 
     @allure.story('卖组合单基金极速回活期宝 /Business/Home/SFTransfer')
     # 卖组合单基金极速回活期宝
@@ -240,7 +248,7 @@ class Test_redeem_Fund_Sub():
     @allure.story('卖组合单基金极速回活期宝 免密 /Business/Home/SFTransferNP')
     # 卖组合单基金极速回活期宝 免密
     def test_Business_Home_SFTransferNP(self):
-        time.sleep(5)
+        time.sleep(4)
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Business/Home/SFTransferNP")
         datas = {
             "UserId": read_yaml2()["CustomerNo"],
