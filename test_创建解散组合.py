@@ -295,6 +295,7 @@ class Test_Create_and_Disband_SubAccount():
     @allure.story('创建第二个组合 /User/SubA/CreateSubA')
     # 创建第二个组合
     def test_User_SubA_CreateSubA2(self):
+        time.sleep(3)  # 中台会提示请勿重复提交。
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/CreateSubA")
         datas = {
             "UserId": read_yaml2()["CustomerNo"],

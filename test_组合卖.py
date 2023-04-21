@@ -57,15 +57,15 @@ class Test_redeem_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                with allure.step('组合卖出是否正常'):
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
-        ErrorCode = res.json()["ErrorCode"]
-        ErrorMessage = res.json()["Data"]["ListTips"][0]["ThirdTitle"]
-        with allure.step('组合卖出是否正常'):
-            if ErrorCode == 0:
-                assert True
-            else:
-                assert False, ErrorMessage
 
     @allure.story('等比例卖出组合 免密 /User/SubA/SubARatioRedeemCardsNP')
     # 等比例卖出组合 免密
@@ -90,12 +90,12 @@ class Test_redeem_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                with allure.step('组合卖出是否正常'):
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
-        ErrorCode = res.json()["ErrorCode"]
-        ErrorMessage = res.json()["Data"]["ListTips"][0]["ThirdTitle"]
-        with allure.step('组合卖出是否正常'):
-            if ErrorCode == 0:
-                assert True
-            else:
-                assert False, ErrorMessage
