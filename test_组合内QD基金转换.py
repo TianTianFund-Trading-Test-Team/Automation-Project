@@ -79,16 +79,21 @@ class Test_redeem_QDFund_Sub():
                     assert True
                 else:
                     assert False, '接口状态码非200'
-            with allure.step('是否存在份额可以QD转换'):
-                for i in range(3):
-                    if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 14:
-                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                        write_yaml3({"ShareId": ShareId})
-                        write_yaml3({"AvailableShare": AvailableShare})
-                        break
+            with allure.step('是否存在份额可以QD转换'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                for i in range(5):
+                    try:
+                        if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 14:
+                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                            write_yaml3({"ShareId": ShareId})
+                            write_yaml3({"AvailableShare": AvailableShare})
+                            break
+                    except IndexError:
+                        pass
+
                 if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
                     clear_yaml3()
+                    assert False, '没有足够的QD基金份额做890'
 
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕
