@@ -32,25 +32,25 @@ class Test_redeem_QDFund_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                Res = res.json()["Data"]["AssetDetails"]
+                with allure.step('组合里是否有QD基金'):
+                    if Res == []:
+                        clear_yaml3()
+                        assert False, '组合内没有QD基金'
+                    else:
+                        assert True
+                        AssetValue = res.json()["Data"]["AssetDetails"][0]["AssetValue"]
+                        with allure.step('QD基金是否有足够份额'):
+                            if AssetValue > '15':
+                                assert True
+                                FundCode = res.json()["Data"]["AssetDetails"][0]["FundCode"]
+                                clear_yaml3()
+                                write_yaml3({"FundCode": FundCode})
+                            else:
+                                clear_yaml3()
+                                assert False, '份额不足无法发起'
             else:
                 assert False, '接口状态码非200'
-        Res = res.json()["Data"]["AssetDetails"]
-        with allure.step('组合里是否有QD基金'):
-            if Res == []:
-                clear_yaml3()
-                assert False, '组合内没有QD基金'
-            else:
-                assert True
-                AssetValue = res.json()["Data"]["AssetDetails"][0]["AssetValue"]
-                with allure.step('QD基金是否有足够份额'):
-                    if AssetValue > '15':
-                        assert True
-                        FundCode = res.json()["Data"]["AssetDetails"][0]["FundCode"]
-                        clear_yaml3()
-                        write_yaml3({"FundCode": FundCode})
-                    else:
-                        clear_yaml3()
-                        assert False, '份额不足无法发起'
 
     @allure.story('持仓详情（组合） /User/home/GetShareDetail')
     # 获取特定基金的组合份额
@@ -77,23 +77,23 @@ class Test_redeem_QDFund_Sub():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    with allure.step('是否存在份额可以QD转换'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                        for i in range(5):
+                            try:
+                                if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 14:
+                                    AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                    ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                    write_yaml3({"ShareId": ShareId})
+                                    write_yaml3({"AvailableShare": AvailableShare})
+                                    break
+                            except IndexError:
+                                pass
+
+                        if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
+                            clear_yaml3()
+                            assert False, '没有足够的QD基金份额做890'
                 else:
                     assert False, '接口状态码非200'
-            with allure.step('是否存在份额可以QD转换'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
-                for i in range(5):
-                    try:
-                        if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 14:
-                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                            write_yaml3({"ShareId": ShareId})
-                            write_yaml3({"AvailableShare": AvailableShare})
-                            break
-                    except IndexError:
-                        pass
-
-                if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
-                    clear_yaml3()
-                    assert False, '没有足够的QD基金份额做890'
 
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕
@@ -109,8 +109,13 @@ class Test_redeem_QDFund_Sub():
                 "UToken": read_yaml2()["UToken"]
             }
             res = requests.request(method='post', url=url, params=datas)
-            TraceID = res.json()["Data"]["TraceID"]
-            write_yaml3({"TraceID": TraceID})
+            with allure.step('接口是否正常调通'):
+                if res.status_code == 200:
+                    assert True
+                    TraceID = res.json()["Data"]["TraceID"]
+                    write_yaml3({"TraceID": TraceID})
+                else:
+                    assert False, '接口状态码非200'
 
     @allure.story('组合内QD基金转换 /Business/Home/SFT1Transfer')
     # 组合内QD基金转换
@@ -142,23 +147,23 @@ class Test_redeem_QDFund_Sub():
                 "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
             }
             res = requests.request(method='post', url=url, params=datas)
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    with allure.step('组合内QD基金转换是否成功'):
+                        if ErrorCode == 0:
+                            assert True, '申请受理成功'
+                            clear_yaml3()
+                            BusinSerialNo = res.json()["Data"]["JumpParams"]["BusinSerialNo"]
+                            BusinessType = res.json()["Data"]["JumpParams"]["BusinessType"]
+                            write_yaml3({"BusinSerialNo": BusinSerialNo})
+                            write_yaml3({"BusinessType": BusinessType})
+                        else:
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
-            with allure.step('组合内QD基金转换是否成功'):
-                if ErrorCode == 0:
-                    assert True, '申请受理成功'
-                    clear_yaml3()
-                    BusinSerialNo = res.json()["Data"]["JumpParams"]["BusinSerialNo"]
-                    BusinessType = res.json()["Data"]["JumpParams"]["BusinessType"]
-                    write_yaml3({"BusinSerialNo": BusinSerialNo})
-                    write_yaml3({"BusinessType": BusinessType})
-                else:
-                    assert False, ErrorMessage
 
     @allure.story('890撤单 /Trade/FundTrade/RevokeOrder')
     # 890撤单
@@ -186,15 +191,15 @@ class Test_redeem_QDFund_Sub():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    with allure.step('QD基金撤单是否成功'):
+                        if ErrorCode == 0:
+                            assert True, '撤单受理成功'
+                        else:
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
-            with allure.step('QD基金撤单是否成功'):
-                if ErrorCode == 0:
-                    assert True, '撤单受理成功'
-                else:
-                    assert False, ErrorMessage
 
 
 @allure.feature('组合内QD基金 免密 890')
@@ -220,25 +225,25 @@ class Test_redeem_QDFund_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                Res = res.json()["Data"]["AssetDetails"]
+                with allure.step('组合里是否有QD基金'):
+                    if Res == []:
+                        clear_yaml3()
+                        assert False, '组合内没有QD基金'
+                    else:
+                        assert True
+                        AssetValue = res.json()["Data"]["AssetDetails"][0]["AssetValue"]
+                        with allure.step('QD基金是否有足够份额'):
+                            if AssetValue > '15':
+                                assert True
+                                FundCode = res.json()["Data"]["AssetDetails"][0]["FundCode"]
+                                clear_yaml3()
+                                write_yaml3({"FundCode": FundCode})
+                            else:
+                                clear_yaml3()
+                                assert False, '份额不足无法发起'
             else:
                 assert False, '接口状态码非200'
-        Res = res.json()["Data"]["AssetDetails"]
-        with allure.step('组合里是否有QD基金'):
-            if Res == []:
-                clear_yaml3()
-                assert False, '组合内没有QD基金'
-            else:
-                assert True
-                AssetValue = res.json()["Data"]["AssetDetails"][0]["AssetValue"]
-                with allure.step('QD基金是否有足够份额'):
-                    if AssetValue > '15':
-                        assert True
-                        FundCode = res.json()["Data"]["AssetDetails"][0]["FundCode"]
-                        clear_yaml3()
-                        write_yaml3({"FundCode": FundCode})
-                    else:
-                        clear_yaml3()
-                        assert False, '份额不足无法发起'
 
     @allure.story('持仓详情（组合） /User/home/GetShareDetail')
     # 获取特定基金的组合份额
@@ -265,23 +270,23 @@ class Test_redeem_QDFund_Sub_NP():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    with allure.step('是否存在份额可以QD转换'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                        for i in range(5):
+                            try:
+                                if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 14:
+                                    AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                    ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                    write_yaml3({"ShareId": ShareId})
+                                    write_yaml3({"AvailableShare": AvailableShare})
+                                    break
+                            except IndexError:
+                                pass
+
+                        if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
+                            clear_yaml3()
+                            assert False, '没有足够的QD基金份额做890'
                 else:
                     assert False, '接口状态码非200'
-            with allure.step('是否存在份额可以QD转换'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
-                for i in range(5):
-                    try:
-                        if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > 14:
-                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                            write_yaml3({"ShareId": ShareId})
-                            write_yaml3({"AvailableShare": AvailableShare})
-                            break
-                    except IndexError:
-                        pass
-
-                if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
-                    clear_yaml3()
-                    assert False, '没有足够的QD基金份额做890'
 
     @allure.story('交易留痕 890免密 /Business/home/NoticeStayTrace')
     # 交易留痕2
@@ -297,8 +302,13 @@ class Test_redeem_QDFund_Sub_NP():
                 "UToken": read_yaml2()["UToken"]
             }
             res = requests.request(method='post', url=url, params=datas)
-            TraceID = res.json()["Data"]["TraceID"]
-            write_yaml3({"TraceID": TraceID})
+            with allure.step('接口是否正常调通'):
+                if res.status_code == 200:
+                    assert True
+                    TraceID = res.json()["Data"]["TraceID"]
+                    write_yaml3({"TraceID": TraceID})
+                else:
+                    assert False, '接口状态码非200'
 
     @allure.story('组合内QD基金转换 免密 /Business/Home/SFT1TransferNP')
     # 组合内QD基金转换 免密
@@ -335,18 +345,18 @@ class Test_redeem_QDFund_Sub_NP():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    with allure.step('组合内QD基金转换是否成功'):
+                        if ErrorCode == 0:
+                            assert True, '申请受理成功'
+                            clear_yaml3()
+                            BusinSerialNo = res.json()["Data"]["JumpParams"]["BusinSerialNo"]
+                            BusinessType = res.json()["Data"]["JumpParams"]["BusinessType"]
+                            write_yaml3({"BusinSerialNo": BusinSerialNo})
+                            write_yaml3({"BusinessType": BusinessType})
+                        else:
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
-            with allure.step('组合内QD基金转换是否成功'):
-                if ErrorCode == 0:
-                    assert True, '申请受理成功'
-                    clear_yaml3()
-                    BusinSerialNo = res.json()["Data"]["JumpParams"]["BusinSerialNo"]
-                    BusinessType = res.json()["Data"]["JumpParams"]["BusinessType"]
-                    write_yaml3({"BusinSerialNo": BusinSerialNo})
-                    write_yaml3({"BusinessType": BusinessType})
-                else:
-                    assert False, ErrorMessage
 
     @allure.story('890撤单 免密 /Trade/FundTrade/RevokeOrderNP')
     # 890撤单 免密
@@ -373,12 +383,13 @@ class Test_redeem_QDFund_Sub_NP():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    with allure.step('QD转换撤单是否成功'):
+                        if ErrorCode == 0:
+                            assert True, '撤单受理成功'
+                        else:
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
-            with allure.step('QD转换撤单是否成功'):
-                if ErrorCode == 0:
-                    assert True, '撤单受理成功'
-                else:
-                    assert False, ErrorMessage
+
