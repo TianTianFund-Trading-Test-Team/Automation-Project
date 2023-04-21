@@ -129,7 +129,7 @@ class Test_buy_Sub():
     # 买组合撤单
     def test_Trade_FundTrade_RevokeOrder(self):
         if read_yaml3()["Succeed"] == False:
-            pytest.skip(), '买基金失败无法撤单'
+            pytest.skip(), '买组合失败无法撤单'
         else:
             time.sleep(2)  # 单号落库时间慢，设个延迟防止报错
             url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/RevokeOrder")
@@ -284,7 +284,7 @@ class Test_buy_Sub_NP():
     # 买组合撤单 免密
     def test_Trade_FundTrade_RevokeOrderNP(self):
         if read_yaml3()["Succeed"] == False:
-            pytest.skip(), '买基金失败无法撤单'
+            pytest.skip(), '买组合失败无法撤单'
         else:
             time.sleep(2)  # 单号落库时间慢，设个延迟防止报错
             url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/RevokeOrderNP")
