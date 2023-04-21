@@ -29,11 +29,11 @@ class Test_TransferShare_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ShareId = res.json()["Data"]["SubAccounts"][0]["Details"][0]["ShareId"]
+                clear_yaml3()
+                write_yaml3({"ShareId": ShareId})
             else:
                 assert False, '接口状态码非200'
-        ShareId = res.json()["Data"]["SubAccounts"][0]["Details"][0]["ShareId"]
-        clear_yaml3()
-        write_yaml3({"ShareId": ShareId})
 
     @allure.story('组合转入基金列表 /User/SubA/SubATransferShare')
     # 组合转入基金列表
@@ -56,15 +56,15 @@ class Test_TransferShare_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                with allure.step('组合转入转出是否成功'):
+                    if ErrorCode == 0:
+                        assert True, '申请受理成功'
+                    else:
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
-        ErrorCode = res.json()["ErrorCode"]
-        ErrorMessage = res.json()["ErrorMessage"]
-        with allure.step('组合转入转出是否成功'):
-            if ErrorCode == 0:
-                assert True, '申请受理成功'
-            else:
-                assert False, ErrorMessage
 
     @allure.story('组合转入基金列表 /User/SubA/SubASummary')
     # 组合转入基金列表
@@ -84,11 +84,11 @@ class Test_TransferShare_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ShareId = res.json()["Data"]["SubAccounts"][0]["Details"][0]["ShareId"]
+                clear_yaml3()
+                write_yaml3({"ShareId": ShareId})
             else:
                 assert False, '接口状态码非200'
-        ShareId = res.json()["Data"]["SubAccounts"][0]["Details"][0]["ShareId"]
-        clear_yaml3()
-        write_yaml3({"ShareId": ShareId})
 
     @allure.story('组合转入基金列表 /User/SubA/SubATransferShareNP')
     # 组合转入基金列表
@@ -111,14 +111,13 @@ class Test_TransferShare_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                with allure.step('组合转入转出是否成功'):
+                    if ErrorCode == 0:
+                        assert True, '申请受理成功'
+                    else:
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
-        ErrorCode = res.json()["ErrorCode"]
-        ErrorMessage = res.json()["ErrorMessage"]
-        with allure.step('组合转入转出是否成功'):
-            if ErrorCode == 0:
-                assert True, '申请受理成功'
-            else:
-                assert False, ErrorMessage
-
 
