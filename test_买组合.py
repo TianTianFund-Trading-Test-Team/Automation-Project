@@ -187,6 +187,7 @@ class Test_buy_Sub_NP():
     @allure.story('买组合 /User/SubA/CommitOrderCusNP')
     # 买组合 660以下免密
     def test_User_SubA_CommitOrderCusNP(self):
+        time.sleep(2)  # 防止报”请勿重复提交“
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/CommitOrderCusNP")
         datas = {
             "TradeType": read_yaml4()["TradeType_Sub"],
