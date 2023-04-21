@@ -166,6 +166,7 @@ class Test_redeem_QDFund_Sub():
         if read_yaml3() is None:
             pytest.skip(), '没有QD基金份额或者份额不足无法发起超级转换'
         else:
+            time.sleep(2)  # 单号落库时间慢，设个延迟防止报错
             url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/RevokeOrder")
             datas = {
                 "Password": read_yaml1()[read_yaml4()["Pas"]],
@@ -351,6 +352,7 @@ class Test_redeem_QDFund_Sub_NP():
     # 890撤单 免密
     def test_Trade_FundTrade_RevokeOrderNP(self):
         if read_yaml3() is None:
+            time.sleep(2)  # 单号落库时间慢，设个延迟防止报错
             pytest.skip(), '没有QD基金份额或者份额不足无法发起超级转换'
         else:
             url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/RevokeOrderNP")

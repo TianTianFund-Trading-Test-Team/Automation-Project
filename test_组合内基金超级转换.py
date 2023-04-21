@@ -164,6 +164,7 @@ class Test_CJZH_Sub():
         if read_yaml3() is None:
             pytest.skip(), '没有HH基金份额或者份额不足无法发起超级转换'
         else:
+            time.sleep(2)  # 单号落库时间慢，设个延迟防止报错
             url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/RevokeOrder")
             datas = {
                 "Password": read_yaml1()[read_yaml4()["Pas"]],
@@ -348,6 +349,7 @@ class Test_CJZH_Sub_NP():
         if read_yaml3() is None:
             pytest.skip(), '没有HH基金份额或者份额不足无法发起超级转换'
         else:
+            time.sleep(2)  # 单号落库时间慢，设个延迟防止报错
             url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/RevokeOrderNP")
             datas = {
                 "UserId": read_yaml2()["CustomerNo"],
