@@ -22,8 +22,13 @@ class Test_buy_fund_to_Sub():
             "UToken": read_yaml2()["UToken"]
         }
         res = requests.request(method='post', url=url, params=datas)
-        TraceID = res.json()["Data"]["TraceID"]
-        write_yaml3({"TraceID": TraceID})
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+                TraceID = res.json()["Data"]["TraceID"]
+                write_yaml3({"TraceID": TraceID})
+            else:
+                assert False, '接口状态码非200'
 
     @allure.story('买基金到组合 /Trade/FundTrade/CommitOrder')
     # 买基金到组合 660以下输密码
@@ -55,23 +60,23 @@ class Test_buy_fund_to_Sub():
             "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
         }
         res = requests.request(method='post', url=url, params=datas)
-        ErrorCode = res.json()["ErrorCode"]
-        AppSerialNo = res.json()["Data"]["AppSerialNo"]
-        BusinType = res.json()["Data"]["BusinType"]
-
-        clear_yaml3()
-        write_yaml3({"AppSerialNo": AppSerialNo})
-        write_yaml3({"BusinType": BusinType})
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                with allure.step('买基金到组合请求成功'):
+                    if ErrorCode == 0:
+                        assert True
+                        AppSerialNo = res.json()["Data"]["AppSerialNo"]
+                        BusinType = res.json()["Data"]["BusinType"]
+                        clear_yaml3()
+                        write_yaml3({"AppSerialNo": AppSerialNo})
+                        write_yaml3({"BusinType": BusinType})
+                    else:
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
-        with allure.step('买基金到组合请求成功'):
-            if ErrorCode == 0:
-                assert True
-            else:
-                assert False, '登录状态已过期，请重新登录'
 
     @allure.story('买基金到组合结果页 /Trade/FundTrade/OrderResult')
     def test_Trade_FundTrade_OrderResult(self):
@@ -92,27 +97,27 @@ class Test_buy_fund_to_Sub():
             "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
         }
         res = requests.request(method='post', url=url, params=datas)
-        ErrorCode = res.json()["ErrorCode"]
-        ErrorMessage1 = res.json()["ErrorMessage"]
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage1 = res.json()["ErrorMessage"]
+                with allure.step('买基金到组合受理结果是否正常展示'):
+                    if ErrorCode == 0:
+                        assert True
+                        PayError = res.json()["Data"]["PayError"]
+                        ErrorMessage = res.json()["Data"]["ListTips"][0]["ThirdTitle"]
+                        with allure.step('买基金到组合受理结果是否成功'):
+                            if PayError == '':
+                                assert True, '买基金到组合成功'
+                                write_yaml3({"Succeed": True})
+                            else:
+                                write_yaml3({"Succeed": False})
+                                assert False, ErrorMessage
+                    else:
+                        assert False, ErrorMessage1
             else:
                 assert False, '接口状态码非200'
-        with allure.step('买基金到组合受理结果是否正常展示'):
-            if ErrorCode == 0:
-                assert True
-                PayError = res.json()["Data"]["PayError"]
-                ErrorMessage = res.json()["Data"]["ListTips"][0]["ThirdTitle"]
-                with allure.step('买基金到组合受理结果是否成功'):
-                    if PayError == '':
-                        assert True, '买基金到组合成功'
-                        write_yaml3({"Succeed": True})
-                    else:
-                        write_yaml3({"Succeed": False})
-                        assert False, ErrorMessage
-            else:
-                assert False, ErrorMessage1
 
     @allure.story('买基金到组合撤单 /Trade/FundTrade/RevokeOrder')
     # 买基金到组合撤单
@@ -140,15 +145,15 @@ class Test_buy_fund_to_Sub():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    with allure.step('买基金到组合撤单是否成功'):
+                        if ErrorCode == 0:
+                            assert True, '撤单受理成功'
+                        else:
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
-            with allure.step('买基金到组合撤单是否成功'):
-                if ErrorCode == 0:
-                    assert True, '撤单受理成功'
-                else:
-                    assert False, ErrorMessage
 
 
 @allure.feature('买基金到组合 660以下免密')
@@ -164,8 +169,13 @@ class Test_buy_fund_to_Sub_NP():
             "UToken": read_yaml2()["UToken"]
         }
         res = requests.request(method='post', url=url, params=datas)
-        TraceID = res.json()["Data"]["TraceID"]
-        write_yaml3({"TraceID": TraceID})
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+                TraceID = res.json()["Data"]["TraceID"]
+                write_yaml3({"TraceID": TraceID})
+            else:
+                assert False, '接口状态码非200'
 
     @allure.story('买基金到组合免密 /Trade/FundTrade/CommitOrderNP')
     # 买基金到组合 660以下免密
@@ -196,23 +206,24 @@ class Test_buy_fund_to_Sub_NP():
             "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
         }
         res = requests.request(method='post', url=url, params=datas)
-        ErrorCode = res.json()["ErrorCode"]
-        AppSerialNo = res.json()["Data"]["AppSerialNo"]
-        BusinType = res.json()["Data"]["BusinType"]
-
-        clear_yaml3()
-        write_yaml3({"AppSerialNo": AppSerialNo})
-        write_yaml3({"BusinType": BusinType})
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                with allure.step('买基金到组合请求成功'):
+                    if ErrorCode == 0:
+                        assert True
+                        AppSerialNo = res.json()["Data"]["AppSerialNo"]
+                        BusinType = res.json()["Data"]["BusinType"]
+
+                        clear_yaml3()
+                        write_yaml3({"AppSerialNo": AppSerialNo})
+                        write_yaml3({"BusinType": BusinType})
+                    else:
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
-        with allure.step('买基金到组合请求成功'):
-            if ErrorCode == 0:
-                assert True
-            else:
-                assert False, '登录状态已过期，请重新登录'
 
     @allure.story('买基金到组合结果页 /Trade/FundTrade/OrderResult')
     def test_Trade_FundTrade_OrderResult(self):
@@ -233,27 +244,27 @@ class Test_buy_fund_to_Sub_NP():
             "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
         }
         res = requests.request(method='post', url=url, params=datas)
-        ErrorCode = res.json()["ErrorCode"]
-        ErrorMessage1 = res.json()["ErrorMessage"]
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage1 = res.json()["ErrorMessage"]
+                with allure.step('买基金到组合受理结果是否正常展示'):
+                    if ErrorCode == 0:
+                        assert True
+                        PayError = res.json()["Data"]["PayError"]
+                        ErrorMessage = res.json()["Data"]["ListTips"][0]["ThirdTitle"]
+                        with allure.step('买基金到组合受理结果是否成功'):
+                            if PayError == '':
+                                assert True, '买基金到组合成功'
+                                write_yaml3({"Succeed": True})
+                            else:
+                                write_yaml3({"Succeed": False})
+                                assert False, ErrorMessage
+                    else:
+                        assert False, ErrorMessage1
             else:
                 assert False, '接口状态码非200'
-        with allure.step('买基金到组合受理结果是否正常展示'):
-            if ErrorCode == 0:
-                assert True
-                PayError = res.json()["Data"]["PayError"]
-                ErrorMessage = res.json()["Data"]["ListTips"][0]["ThirdTitle"]
-                with allure.step('买基金到组合受理结果是否成功'):
-                    if PayError == '':
-                        assert True, '买基金到组合成功'
-                        write_yaml3({"Succeed": True})
-                    else:
-                        write_yaml3({"Succeed": False})
-                        assert False, ErrorMessage
-            else:
-                assert False, ErrorMessage1
 
     @allure.story('买基金到组合撤单 免密 /Trade/FundTrade/RevokeOrderNP')
     # 买基金到组合撤单 免密
@@ -280,13 +291,13 @@ class Test_buy_fund_to_Sub_NP():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    with allure.step('买基金到组合撤单是否成功'):
+                        if ErrorCode == 0:
+                            assert True, '撤单受理成功'
+                        else:
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
-            with allure.step('买基金到组合撤单是否成功'):
-                if ErrorCode == 0:
-                    assert True, '撤单受理成功'
-                else:
-                    assert False, ErrorMessage
 
