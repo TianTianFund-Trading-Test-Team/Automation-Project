@@ -1,3 +1,4 @@
+from string import Template
 from urllib.parse import urljoin
 
 import pytest
