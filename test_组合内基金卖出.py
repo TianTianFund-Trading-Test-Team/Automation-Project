@@ -103,17 +103,22 @@ class Test_redeem_Fund_Sub():
                                 assert True
                                 MinSh = res.json()["Data"]["MinSh"]
                                 MinHold = res.json()["Data"]["MinHold"]
-                                if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
-                                    AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                                    ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                    Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
-                                    write_yaml3({"ShareId": ShareId})
-                                    write_yaml3({"AvailableShare": AvailableShare})
-                                    write_yaml3({"Vol": Vol})
-                                    break
+                                EnableSh = res.json()["Data"]["EnableSh"]
+                                if EnableSh == True:
+                                    if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
+                                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                        Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
+                                        write_yaml3({"ShareId": ShareId})
+                                        write_yaml3({"AvailableShare": AvailableShare})
+                                        write_yaml3({"Vol": Vol})
+                                        break
+                                    else:
+                                        clear_yaml3()
+                                        assert False, '赎回后小于最低保留'
                                 else:
                                     clear_yaml3()
-                                    assert False, '赎回后小于最低保留'
+                                    assert False, '该基金暂停赎回'
                             else:
                                 clear_yaml3()
                                 assert False, '没有大于最小赎回的单卡可用份额'
@@ -295,17 +300,21 @@ class Test_redeem_Fund_Sub_NP():
                                 assert True
                                 MinSh = res.json()["Data"]["MinSh"]
                                 MinHold = res.json()["Data"]["MinHold"]
-                                if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
-                                    AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                                    ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                    Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
-                                    write_yaml3({"ShareId": ShareId})
-                                    write_yaml3({"AvailableShare": AvailableShare})
-                                    write_yaml3({"Vol": Vol})
-                                    break
+                                EnableSh = res.json()["Data"]["EnableSh"]
+                                if EnableSh == True:
+                                    if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
+                                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                        Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
+                                        write_yaml3({"ShareId": ShareId})
+                                        write_yaml3({"AvailableShare": AvailableShare})
+                                        write_yaml3({"Vol": Vol})
+                                        break
+                                    else:
+                                        clear_yaml3()
+                                        assert False, '赎回后小于最低保留'
                                 else:
-                                    clear_yaml3()
-                                    assert False, '赎回后小于最低保留'
+                                    assert False, '该基金暂停赎回'
                             else:
                                 clear_yaml3()
                                 assert False, '没有大于最小赎回的单卡可用份额'
@@ -486,21 +495,25 @@ class Test_Quick_redeem_Fund_Sub():
                                 MinSh = res.json()["Data"]["MinSh"]
                                 MinHold = res.json()["Data"]["MinHold"]
                                 Enable815 = res.json()["Data"]["Enable815"]
-                                if Enable815 == True:
-                                    if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
-                                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                        Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
-                                        write_yaml3({"ShareId": ShareId})
-                                        write_yaml3({"AvailableShare": AvailableShare})
-                                        write_yaml3({"Vol": Vol})
-                                        break
+                                EnableSh = res.json()["Data"]["EnableSh"]
+                                if EnableSh == True:
+                                    if Enable815 == True:
+                                        if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
+                                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                            Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
+                                            write_yaml3({"ShareId": ShareId})
+                                            write_yaml3({"AvailableShare": AvailableShare})
+                                            write_yaml3({"Vol": Vol})
+                                            break
+                                        else:
+                                            clear_yaml3()
+                                            assert False, '赎回后小于最低保留'
                                     else:
                                         clear_yaml3()
-                                        assert False, '赎回后小于最低保留'
+                                        assert False, '该基金不支持815'
                                 else:
-                                    clear_yaml3()
-                                    assert False, '该基金不支持815'
+                                    assert False, '该基金暂停赎回'
                             else:
                                 clear_yaml3()
                                 assert False, '没有大于最小赎回的单卡可用份额'
@@ -683,21 +696,25 @@ class Test_Quick_redeem_Fund_Sub_NP():
                                 MinSh = res.json()["Data"]["MinSh"]
                                 MinHold = res.json()["Data"]["MinHold"]
                                 Enable815 = res.json()["Data"]["Enable815"]
-                                if Enable815 == True:
-                                    if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
-                                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                        Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
-                                        write_yaml3({"ShareId": ShareId})
-                                        write_yaml3({"AvailableShare": AvailableShare})
-                                        write_yaml3({"Vol": Vol})
-                                        break
+                                EnableSh = res.json()["Data"]["EnableSh"]
+                                if EnableSh == True:
+                                    if Enable815 == True:
+                                        if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
+                                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                            Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
+                                            write_yaml3({"ShareId": ShareId})
+                                            write_yaml3({"AvailableShare": AvailableShare})
+                                            write_yaml3({"Vol": Vol})
+                                            break
+                                        else:
+                                            clear_yaml3()
+                                            assert False, '赎回后小于最低保留'
                                     else:
                                         clear_yaml3()
-                                        assert False, '赎回后小于最低保留'
+                                        assert False, '该基金不支持815'
                                 else:
-                                    clear_yaml3()
-                                    assert False, '该基金不支持815'
+                                    assert False, '该基金暂停赎回'
                             else:
                                 clear_yaml3()
                                 assert False, '没有大于最小赎回的单卡可用份额'
