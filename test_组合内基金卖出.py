@@ -245,6 +245,8 @@ class Test_redeem_Fund_Sub_NP():
                 assert True
                 clear_yaml3()
                 FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                Count = res.json()["Data"]["AssetCounts"]["HH"]
+                write_yaml2({"Count": Count})
                 write_yaml3({"FundCode": FundCode})
                 write_yaml3({"key": g_key})
             else:
@@ -325,6 +327,7 @@ class Test_redeem_Fund_Sub_NP():
                                 clear_yaml3()
                                 assert False, '没有大于最小赎回的单卡可用份额'
                         except IndexError:
+                            clear_yaml3()
                             pass
             else:
                 assert False, '接口状态码非200'
@@ -439,6 +442,8 @@ class Test_Quick_redeem_Fund_Sub():
                 assert True
                 clear_yaml3()
                 FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                Count = res.json()["Data"]["AssetCounts"]["HH"]
+                write_yaml2({"Count": Count})
                 write_yaml3({"FundCode": FundCode})
                 write_yaml3({"key": g_key})
             else:
@@ -524,6 +529,7 @@ class Test_Quick_redeem_Fund_Sub():
                                 clear_yaml3()
                                 assert False, '没有大于最小赎回的单卡可用份额'
                         except IndexError:
+                            clear_yaml3()
                             pass
             else:
                 assert False, '接口状态码非200'
@@ -640,6 +646,8 @@ class Test_Quick_redeem_Fund_Sub_NP():
                 assert True
                 clear_yaml3()
                 FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                Count = res.json()["Data"]["AssetCounts"]["HH"]
+                write_yaml2({"Count": Count})
                 write_yaml3({"FundCode": FundCode})
                 write_yaml3({"key": g_key})
             else:
@@ -725,6 +733,7 @@ class Test_Quick_redeem_Fund_Sub_NP():
                                 clear_yaml3()
                                 assert False, '没有大于最小赎回的单卡可用份额'
                         except IndexError:
+                            clear_yaml3()
                             pass
             else:
                 assert False, '接口状态码非200'
