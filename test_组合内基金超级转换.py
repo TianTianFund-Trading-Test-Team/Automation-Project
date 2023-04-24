@@ -84,7 +84,6 @@ class Test_CJZH_Sub():
                         clear_yaml3()
                         write_yaml3({"FundCode": FundCode})
                         write_yaml5({"Count": Count})
-                        write_yaml2({"g_key": g_key})
             else:
                 assert False, '接口状态码非200'
 
@@ -361,7 +360,6 @@ class Test_CJZH_Sub_NP():
                         clear_yaml3()
                         write_yaml3({"FundCode": FundCode})
                         write_yaml5({"Count": Count})
-                        write_yaml2({"g_key": g_key})
             else:
                 assert False, '接口状态码非200'
 
