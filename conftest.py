@@ -36,6 +36,13 @@ def read_yaml4():
         return value
 
 
+# 读取test_params3(存放临时参数）
+def read_yaml5():
+    with open("test_params3.yaml", encoding="utf-8") as f:
+        value = yaml.load(f, Loader=yaml.FullLoader)
+        return value
+
+
 # 写入test_params
 def write_yaml2(data):
     with open("test_params.yaml", encoding="utf-8", mode="a") as f:
@@ -49,7 +56,7 @@ def write_yaml3(data):
 
 
 # 写入test_params3
-def write_yaml4(data):
+def write_yaml5(data):
     with open("test_params3.yaml", encoding="utf-8", mode="a") as f:
         value = yaml.dump(data, stream=f, allow_unicode=True)
 
@@ -68,7 +75,7 @@ def clear_yaml3():
 
 
 # 清空test_params3
-def clear_yaml4():
+def clear_yaml5():
     with open("test_params3.yaml", mode='w', encoding='utf-8') as f:
         f.truncate()
 
