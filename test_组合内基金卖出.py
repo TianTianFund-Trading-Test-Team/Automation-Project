@@ -15,7 +15,10 @@ g_key = 0
 # 修改全局变量（+1）
 def modify_g_key():
     global g_key
-    g_key = g_key + 1
+    if g_key < read_yaml2()["Count"]-1:
+        g_key = g_key + 1
+    else:
+        assert False, '组合内基金都不满足卖出条件'
 
 
 @allure.feature('组合内基金普通卖出 24')
@@ -42,6 +45,8 @@ class Test_redeem_Fund_Sub():
                 assert True
                 clear_yaml3()
                 FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                Count = res.json()["Data"]["AssetCounts"]["HH"]
+                write_yaml2({"Count": Count})
                 write_yaml3({"FundCode": FundCode})
                 write_yaml3({"key": g_key})
             else:
@@ -53,7 +58,7 @@ class Test_redeem_Fund_Sub():
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/home/GetShareDetail")
         datas = {
             "UserId": read_yaml2()["CustomerNo"],
-            "SubAccountNo":"",
+            "SubAccountNo": "",
             "FundCode": read_yaml3()["FundCode"],
             "IsBaseAsset": "false",
             "TransactionAccountId": "",
@@ -123,6 +128,7 @@ class Test_redeem_Fund_Sub():
                                 clear_yaml3()
                                 assert False, '没有大于最小赎回的单卡可用份额'
                         except IndexError:
+                            clear_yaml3()
                             pass
             else:
                 assert False, '接口状态码非200'
