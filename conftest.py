@@ -48,6 +48,12 @@ def write_yaml3(data):
         value = yaml.dump(data, stream=f, allow_unicode=True)
 
 
+# 写入test_params3
+def write_yaml4(data):
+    with open("test_params3.yaml", encoding="utf-8", mode="a") as f:
+        value = yaml.dump(data, stream=f, allow_unicode=True)
+
+
 # 清空test_params（每次自动化只清理一次）
 @pytest.fixture(scope="session", autouse=True)
 def clear_yaml2():
@@ -58,6 +64,12 @@ def clear_yaml2():
 # 清空test_params2
 def clear_yaml3():
     with open("test_params2.yaml", mode='w', encoding='utf-8') as f:
+        f.truncate()
+
+
+# 清空test_params3
+def clear_yaml4():
+    with open("test_params3.yaml", mode='w', encoding='utf-8') as f:
         f.truncate()
 
 
