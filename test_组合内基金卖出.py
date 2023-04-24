@@ -385,7 +385,7 @@ class Test_redeem_Fund_Sub_NP():
     @allure.story('组合内基金卖出撤单 免密 /Trade/FundTrade/RevokeOrderNP')
     # 买组合撤单 免密
     def test_Trade_FundTrade_RevokeOrderNP(self):
-        if read_yaml3()["Succeed"] == False:
+        if read_yaml3() is None or read_yaml3()["Succeed"] == False:
             pytest.skip(), '买基金失败无法撤单'
         else:
             time.sleep(4)  # 单号落库时间慢，设个延迟防止报错
