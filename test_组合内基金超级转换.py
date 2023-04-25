@@ -15,10 +15,13 @@ g_key = 0
 
 def modify_g_key():
     global g_key
-    if g_key < read_yaml5()["Count"] - 1:
-        g_key = g_key + 1
-    else:
-        assert False, '组合内基金均不支持超级转换'
+    try:
+        if g_key < read_yaml5()["Count"] - 1:
+            g_key = g_key + 1
+        else:
+            assert False, '组合内基金均不支持超级转换'
+    except KeyError:
+        assert False, '组合内没有HH基金'
 
 
 @allure.feature('组合内基金超级转换 815')
@@ -45,9 +48,17 @@ class Test_CJZH_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                clear_yaml5()
-                MinSg = res.json()["Data"]["MinSg"]
-                write_yaml5({"MinSg": MinSg})  # 拿003333最小申购金额
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        clear_yaml5()
+                        MinSg = res.json()["Data"]["MinSg"]
+                        write_yaml5({"MinSg": MinSg})  # 拿003333最小申购金额
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -72,20 +83,67 @@ class Test_CJZH_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                Res = res.json()["Data"]["AssetDetails"]
-                with allure.step('组合里是否有HH基金'):
-                    if Res == []:
-                        clear_yaml3()
-                        assert False, '组合内没有HH基金'
-                    else:
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
                         assert True
-                        Count = res.json()["Data"]["AssetCounts"]["HH"]
-                        FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                        Res = res.json()["Data"]["AssetDetails"]
+                        with allure.step('组合里是否有HH基金'):
+                            if Res == []:
+                                clear_yaml3()
+                                assert False, '组合内没有HH基金'
+                            else:
+                                assert True
+                                Count = res.json()["Data"]["AssetCounts"]["HH"]
+                                FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                                clear_yaml3()
+                                write_yaml3({"FundCode": FundCode})
+                                write_yaml5({"Count": Count})
+                    else:
                         clear_yaml3()
-                        write_yaml3({"FundCode": FundCode})
-                        write_yaml5({"Count": Count})
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
+
+    @allure.story('持仓详情 /User/home/GetShareDetail')
+    # 获取特定基金的所有份额
+    def test_User_home_GetShareDetail_all(self):
+        if read_yaml3() is None:
+            pytest.skip(), '没有HH基金份额无法发起超级转换'
+        else:
+            url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/home/GetShareDetail")
+            datas = {
+                "UserId": read_yaml2()["CustomerNo"],
+                "SubAccountNo": "",
+                "FundCode": read_yaml3()["FundCode"],
+                "IsBaseAsset": "false",
+                "TransactionAccountId": "",
+                "NeedReturnZeroVolItems": "false",
+
+                "PhoneType": "IPhone",
+                "ServerVersion": "6.5.8",
+                "CToken": read_yaml2()["CToken"],
+                "UToken": read_yaml2()["UToken"],
+                "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+            }
+            time.sleep(1)  # 公测13分区请求返回有点慢，加的逻辑
+            res = requests.request(method='post', url=url, params=datas)
+            with allure.step('接口是否正常调通'):
+                if res.status_code == 200:
+                    assert True
+                    with allure.step('接口是否返回正常'):
+                        ErrorCode = res.json()["ErrorCode"]
+                        ErrorMessage = res.json()["ErrorMessage"]
+                        if ErrorCode == 0:
+                            assert True
+                            AvailableShare_all = res.json()["Data"]["AvailableShare"]
+                            write_yaml3({"AvailableShare_all": AvailableShare_all})
+                        else:
+                            clear_yaml3()
+                            assert False, ErrorMessage
+                else:
+                    assert False, '接口状态码非200'
 
     @allure.story('持仓详情（组合） /User/home/GetShareDetail')
     # 获取特定基金的组合份额
@@ -112,33 +170,46 @@ class Test_CJZH_Sub():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
-                    Enable815 = res.json()["Data"]["Enable815"]
-                    if Enable815 == True:
-                        FundNav = res.json()["Data"]["FundNav"]
-                        for i in range(5):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
-                            try:
-                                if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > (
-                                        read_yaml5()["MinSg"] / FundNav) / 0.9:
-                                    BankCardNo = res.json()["Data"]["Shares"][i - 1]["BankCardNo"]
-                                    BankAccountNo = res.json()["Data"]["Shares"][i - 1]["BankAccountNo"]
-                                    ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                    write_yaml3({"BankCardNo": BankCardNo})
-                                    write_yaml3({"BankAccountNo": BankAccountNo})
-                                    write_yaml3({"ShareId": ShareId})
-                                break
-                            except IndexError:
+                    with allure.step('接口是否返回正常'):
+                        ErrorCode = res.json()["ErrorCode"]
+                        ErrorMessage = res.json()["ErrorMessage"]
+                        if ErrorCode == 0:
+                            assert True
+                            Enable815 = res.json()["Data"]["Enable815"]
+                            if Enable815 == True:
+                                FundNav = res.json()["Data"]["FundNav"]
+                                MinSh = res.json()["Data"]["MinSh"]
+                                for i in range(5):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                                    try:
+                                        if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > (
+                                                read_yaml5()["MinSg"] / FundNav) / 0.9 and \
+                                                res.json()["Data"]["Shares"][i - 1][
+                                                    "AvailableShare"] >= MinSh:
+                                            BankCardNo = res.json()["Data"]["Shares"][i - 1]["BankCardNo"]
+                                            BankAccountNo = res.json()["Data"]["Shares"][i - 1]["BankAccountNo"]
+                                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                            write_yaml3({"BankCardNo": BankCardNo})
+                                            write_yaml3({"BankAccountNo": BankAccountNo})
+                                            write_yaml3({"ShareId": ShareId})
+                                            write_yaml3({"AvailableShare": AvailableShare})
+                                            break
+                                    except IndexError:
+                                        clear_yaml3()
+                                        pass
+                                try:
+                                    if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
+                                        clear_yaml3()
+                                        '该基金没有份额可以做超级转换'
+                                except TypeError:
+                                    clear_yaml3()
+                                    pass
+                            else:
                                 clear_yaml3()
-                                pass
-                        try:
-                            if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
-                                clear_yaml3()
-                                '该基金没有份额可以做超级转换'
-                        except TypeError:
+                                '该基金不支持股基转换'
+                        else:
                             clear_yaml3()
-                            pass
-                    else:
-                        clear_yaml3()
-                        '该基金不支持股基转换'
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
 
@@ -149,6 +220,7 @@ class Test_CJZH_Sub():
             modify_g_key()
             self.test_User_home_GetShareDetail_003333()
             self.test_User_Asset_GetFundAssetListOfSubV2()
+            self.test_User_home_GetShareDetail_all()
             self.test_User_home_GetShareDetail()
             self.test_Trade_FundTrade_TransferOverview()
         else:
@@ -171,21 +243,29 @@ class Test_CJZH_Sub():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
-                    FundNav = res.json()["Data"]["TranOutFund"]["FundNav"]
-                    MinRedeem = res.json()["Data"]["TranOutFund"]["MinRedeem"]
-                    MinHoldShares = res.json()["Data"]["TranOutFund"]["MinHoldShares"]
-                    AvailableVol = res.json()["Data"]["TranOutFund"]["RedeemShareAndRateList"][0]["AvailableVol"]
-                    FundAmount_CJZH = round((read_yaml5()["MinSg"] / FundNav) / 0.9, 2)+0.01  # 中台进位问题
-                    if MinRedeem < FundAmount_CJZH:
-                        if AvailableVol - FundAmount_CJZH > MinHoldShares:
-                            write_yaml3({"FundAmount_CJZH": FundAmount_CJZH})
+                    with allure.step('接口是否返回正常'):
+                        ErrorCode = res.json()["ErrorCode"]
+                        ErrorMessage = res.json()["ErrorMessage"]
+                        if ErrorCode == 0:
+                            assert True
+                            FundNav = res.json()["Data"]["TranOutFund"]["FundNav"]
+                            MinRedeem = res.json()["Data"]["TranOutFund"]["MinRedeem"]
+                            MinHoldShares = res.json()["Data"]["TranOutFund"]["MinHoldShares"]
+                            AvailableVol = read_yaml3()["AvailableShare_all"]
+                            FundAmount_CJZH = round((read_yaml5()["MinSg"] / FundNav) / 0.9, 2) + 0.01
+                            if MinRedeem < FundAmount_CJZH:
+                                if AvailableVol - FundAmount_CJZH > MinHoldShares:
+                                    write_yaml3({"FundAmount_CJZH": FundAmount_CJZH})
+                                else:
+                                    clear_yaml3(), '当前基金多卡持有，当前卡全部赎回时，剩余份额不满足最小保留，请先进行份额合并。'
+                            else:
+                                if AvailableVol - MinRedeem > MinHoldShares:
+                                    write_yaml3({"FundAmount_CJZH": MinRedeem})
+                                else:
+                                    clear_yaml3(), '当前基金多卡持有，当前卡全部赎回时，剩余份额不满足最小保留，请先进行份额合并。'
                         else:
-                            write_yaml3({"FundAmount_CJZH": AvailableVol})
-                    else:
-                        if AvailableVol - MinRedeem > MinHoldShares:
-                            write_yaml3({"FundAmount_CJZH": MinRedeem})
-                        else:
-                            write_yaml3({"FundAmount_CJZH": AvailableVol})
+                            clear_yaml3()
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
 
@@ -206,8 +286,16 @@ class Test_CJZH_Sub():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
-                    TraceID = res.json()["Data"]["TraceID"]
-                    write_yaml3({"TraceID": TraceID})
+                    with allure.step('接口是否返回正常'):
+                        ErrorCode = res.json()["ErrorCode"]
+                        ErrorMessage = res.json()["ErrorMessage"]
+                        if ErrorCode == 0:
+                            assert True
+                            TraceID = res.json()["Data"]["TraceID"]
+                            write_yaml3({"TraceID": TraceID})
+                        else:
+                            clear_yaml3()
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
 
@@ -321,9 +409,17 @@ class Test_CJZH_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                clear_yaml5()
-                MinSg = res.json()["Data"]["MinSg"]
-                write_yaml5({"MinSg": MinSg})  # 拿003333最小申购金额
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        clear_yaml5()
+                        MinSg = res.json()["Data"]["MinSg"]
+                        write_yaml5({"MinSg": MinSg})  # 拿003333最小申购金额
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -348,20 +444,67 @@ class Test_CJZH_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                Res = res.json()["Data"]["AssetDetails"]
-                with allure.step('组合里是否有HH基金'):
-                    if Res == []:
-                        clear_yaml3()
-                        assert False, '组合内没有HH基金'
-                    else:
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
                         assert True
-                        Count = res.json()["Data"]["AssetCounts"]["HH"]
-                        FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                        Res = res.json()["Data"]["AssetDetails"]
+                        with allure.step('组合里是否有HH基金'):
+                            if Res == []:
+                                clear_yaml3()
+                                assert False, '组合内没有HH基金'
+                            else:
+                                assert True
+                                Count = res.json()["Data"]["AssetCounts"]["HH"]
+                                FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                                clear_yaml3()
+                                write_yaml3({"FundCode": FundCode})
+                                write_yaml5({"Count": Count})
+                    else:
                         clear_yaml3()
-                        write_yaml3({"FundCode": FundCode})
-                        write_yaml5({"Count": Count})
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
+
+    @allure.story('持仓详情 /User/home/GetShareDetail')
+    # 获取特定基金的所有份额
+    def test_User_home_GetShareDetail_all(self):
+        if read_yaml3() is None:
+            pytest.skip(), '没有HH基金份额无法发起超级转换'
+        else:
+            url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/home/GetShareDetail")
+            datas = {
+                "UserId": read_yaml2()["CustomerNo"],
+                "SubAccountNo": "",
+                "FundCode": read_yaml3()["FundCode"],
+                "IsBaseAsset": "false",
+                "TransactionAccountId": "",
+                "NeedReturnZeroVolItems": "false",
+
+                "PhoneType": "IPhone",
+                "ServerVersion": "6.5.8",
+                "CToken": read_yaml2()["CToken"],
+                "UToken": read_yaml2()["UToken"],
+                "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+            }
+            time.sleep(1)  # 公测13分区请求返回有点慢，加的逻辑
+            res = requests.request(method='post', url=url, params=datas)
+            with allure.step('接口是否正常调通'):
+                if res.status_code == 200:
+                    assert True
+                    with allure.step('接口是否返回正常'):
+                        ErrorCode = res.json()["ErrorCode"]
+                        ErrorMessage = res.json()["ErrorMessage"]
+                        if ErrorCode == 0:
+                            assert True
+                            AvailableShare_all = res.json()["Data"]["AvailableShare"]
+                            write_yaml3({"AvailableShare_all": AvailableShare_all})
+                        else:
+                            clear_yaml3()
+                            assert False, ErrorMessage
+                else:
+                    assert False, '接口状态码非200'
 
     @allure.story('持仓详情（组合） /User/home/GetShareDetail')
     # 获取特定基金的组合份额
@@ -388,33 +531,46 @@ class Test_CJZH_Sub_NP():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
-                    Enable815 = res.json()["Data"]["Enable815"]
-                    if Enable815 == True:
-                        FundNav = res.json()["Data"]["FundNav"]
-                        for i in range(5):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
-                            try:
-                                if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > (
-                                        read_yaml5()["MinSg"] / FundNav) / 0.9:
-                                    BankCardNo = res.json()["Data"]["Shares"][i - 1]["BankCardNo"]
-                                    BankAccountNo = res.json()["Data"]["Shares"][i - 1]["BankAccountNo"]
-                                    ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                    write_yaml3({"BankCardNo": BankCardNo})
-                                    write_yaml3({"BankAccountNo": BankAccountNo})
-                                    write_yaml3({"ShareId": ShareId})
-                                break
-                            except IndexError:
+                    with allure.step('接口是否返回正常'):
+                        ErrorCode = res.json()["ErrorCode"]
+                        ErrorMessage = res.json()["ErrorMessage"]
+                        if ErrorCode == 0:
+                            assert True
+                            Enable815 = res.json()["Data"]["Enable815"]
+                            if Enable815 == True:
+                                FundNav = res.json()["Data"]["FundNav"]
+                                MinSh = res.json()["Data"]["MinSh"]
+                                for i in range(5):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                                    try:
+                                        if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > (
+                                                read_yaml5()["MinSg"] / FundNav) / 0.9 and \
+                                                res.json()["Data"]["Shares"][i - 1][
+                                                    "AvailableShare"] >= MinSh:
+                                            BankCardNo = res.json()["Data"]["Shares"][i - 1]["BankCardNo"]
+                                            BankAccountNo = res.json()["Data"]["Shares"][i - 1]["BankAccountNo"]
+                                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                            write_yaml3({"BankCardNo": BankCardNo})
+                                            write_yaml3({"BankAccountNo": BankAccountNo})
+                                            write_yaml3({"ShareId": ShareId})
+                                            write_yaml3({"AvailableShare": AvailableShare})
+                                            break
+                                    except IndexError:
+                                        clear_yaml3()
+                                        pass
+                                try:
+                                    if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
+                                        clear_yaml3()
+                                        '该基金没有份额可以做超级转换'
+                                except TypeError:
+                                    clear_yaml3()
+                                    pass
+                            else:
                                 clear_yaml3()
-                                pass
-                        try:
-                            if read_yaml3() == {'FundCode': read_yaml3()["FundCode"]}:
-                                clear_yaml3()
-                                '该基金没有份额可以做超级转换'
-                        except TypeError:
+                                '该基金不支持股基转换'
+                        else:
                             clear_yaml3()
-                            pass
-                    else:
-                        clear_yaml3()
-                        '该基金不支持股基转换'
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
 
@@ -425,6 +581,7 @@ class Test_CJZH_Sub_NP():
             modify_g_key()
             self.test_User_home_GetShareDetail_003333()
             self.test_User_Asset_GetFundAssetListOfSubV2()
+            self.test_User_home_GetShareDetail_all()
             self.test_User_home_GetShareDetail()
             self.test_Trade_FundTrade_TransferOverview()
         else:
@@ -447,21 +604,29 @@ class Test_CJZH_Sub_NP():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
-                    FundNav = res.json()["Data"]["TranOutFund"]["FundNav"]
-                    MinRedeem = res.json()["Data"]["TranOutFund"]["MinRedeem"]
-                    MinHoldShares = res.json()["Data"]["TranOutFund"]["MinHoldShares"]
-                    AvailableVol = res.json()["Data"]["TranOutFund"]["RedeemShareAndRateList"][0]["AvailableVol"]
-                    FundAmount_CJZH = round((read_yaml5()["MinSg"] / FundNav) / 0.9, 2)+0.01
-                    if MinRedeem < FundAmount_CJZH:
-                        if AvailableVol - FundAmount_CJZH > MinHoldShares:
-                            write_yaml3({"FundAmount_CJZH": FundAmount_CJZH})
+                    with allure.step('接口是否返回正常'):
+                        ErrorCode = res.json()["ErrorCode"]
+                        ErrorMessage = res.json()["ErrorMessage"]
+                        if ErrorCode == 0:
+                            assert True
+                            FundNav = res.json()["Data"]["TranOutFund"]["FundNav"]
+                            MinRedeem = res.json()["Data"]["TranOutFund"]["MinRedeem"]
+                            MinHoldShares = res.json()["Data"]["TranOutFund"]["MinHoldShares"]
+                            AvailableVol = read_yaml3()["AvailableShare_all"]
+                            FundAmount_CJZH = round((read_yaml5()["MinSg"] / FundNav) / 0.9, 2) + 0.01
+                            if MinRedeem < FundAmount_CJZH:
+                                if AvailableVol - FundAmount_CJZH > MinHoldShares:
+                                    write_yaml3({"FundAmount_CJZH": FundAmount_CJZH})
+                                else:
+                                    clear_yaml3(), '当前基金多卡持有，当前卡全部赎回时，剩余份额不满足最小保留，请先进行份额合并。'
+                            else:
+                                if AvailableVol - MinRedeem > MinHoldShares:
+                                    write_yaml3({"FundAmount_CJZH": MinRedeem})
+                                else:
+                                    clear_yaml3(), '当前基金多卡持有，当前卡全部赎回时，剩余份额不满足最小保留，请先进行份额合并。'
                         else:
-                            write_yaml3({"FundAmount_CJZH": AvailableVol})
-                    else:
-                        if AvailableVol - MinRedeem > MinHoldShares:
-                            write_yaml3({"FundAmount_CJZH": MinRedeem})
-                        else:
-                            write_yaml3({"FundAmount_CJZH": AvailableVol})
+                            clear_yaml3()
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
 
@@ -482,8 +647,16 @@ class Test_CJZH_Sub_NP():
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
-                    TraceID = res.json()["Data"]["TraceID"]
-                    write_yaml3({"TraceID": TraceID})
+                    with allure.step('接口是否返回正常'):
+                        ErrorCode = res.json()["ErrorCode"]
+                        ErrorMessage = res.json()["ErrorMessage"]
+                        if ErrorCode == 0:
+                            assert True
+                            TraceID = res.json()["Data"]["TraceID"]
+                            write_yaml3({"TraceID": TraceID})
+                        else:
+                            clear_yaml3()
+                            assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
 
@@ -529,6 +702,7 @@ class Test_CJZH_Sub_NP():
                             write_yaml3({"BusinSerialNo": BusinSerialNo})
                             write_yaml3({"BusinessType": BusinessType})
                         else:
+                            clear_yaml3()
                             assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
