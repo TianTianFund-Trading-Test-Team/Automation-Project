@@ -44,12 +44,20 @@ class Test_redeem_Fund_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                clear_yaml3()
-                clear_yaml5()
-                FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
-                Count = res.json()["Data"]["AssetCounts"]["HH"]
-                write_yaml5({"Count": Count})
-                write_yaml3({"FundCode": FundCode})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        clear_yaml3()
+                        clear_yaml5()
+                        FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                        Count = res.json()["Data"]["AssetCounts"]["HH"]
+                        write_yaml5({"Count": Count})
+                        write_yaml3({"FundCode": FundCode})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -75,8 +83,16 @@ class Test_redeem_Fund_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                AvailableShare_all = res.json()["Data"]["AvailableShare"]
-                write_yaml3({"AvailableShare_all": AvailableShare_all})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        AvailableShare_all = res.json()["Data"]["AvailableShare"]
+                        write_yaml3({"AvailableShare_all": AvailableShare_all})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -102,35 +118,45 @@ class Test_redeem_Fund_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                with allure.step('选择大于最小赎回的份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
-                    for i in range(5):
-                        try:
-                            if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > res.json()["Data"]["MinSh"]:
-                                assert True
-                                MinSh = res.json()["Data"]["MinSh"]
-                                MinHold = res.json()["Data"]["MinHold"]
-                                EnableSh = res.json()["Data"]["EnableSh"]
-                                if EnableSh == True:
-                                    if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
-                                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                        Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
-                                        write_yaml3({"ShareId": ShareId})
-                                        write_yaml3({"AvailableShare": AvailableShare})
-                                        write_yaml3({"Vol": Vol})
-                                        break
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        with allure.step('选择大于最小赎回的份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                            for i in range(5):
+                                try:
+                                    if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > res.json()["Data"][
+                                        "MinSh"]:
+                                        assert True
+                                        MinSh = res.json()["Data"]["MinSh"]
+                                        MinHold = res.json()["Data"]["MinHold"]
+                                        EnableSh = res.json()["Data"]["EnableSh"]
+                                        if EnableSh == True:
+                                            if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
+                                                AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                                ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                                Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
+                                                write_yaml3({"ShareId": ShareId})
+                                                write_yaml3({"AvailableShare": AvailableShare})
+                                                write_yaml3({"Vol": Vol})
+                                                break
+                                            else:
+                                                clear_yaml3()
+                                                assert False, '赎回后小于最低保留'
+                                        else:
+                                            clear_yaml3()
+                                            assert False, '该基金暂停赎回'
                                     else:
                                         clear_yaml3()
-                                        assert False, '赎回后小于最低保留'
-                                else:
+                                        assert False, '没有大于最小赎回的单卡可用份额'
+                                except IndexError:
                                     clear_yaml3()
-                                    assert False, '该基金暂停赎回'
-                            else:
-                                clear_yaml3()
-                                assert False, '没有大于最小赎回的单卡可用份额'
-                        except IndexError:
-                            clear_yaml3()
-                            pass
+                                    pass
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
+
             else:
                 assert False, '接口状态码非200'
 
@@ -244,12 +270,20 @@ class Test_redeem_Fund_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                clear_yaml3()
-                clear_yaml5()
-                FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
-                Count = res.json()["Data"]["AssetCounts"]["HH"]
-                write_yaml5({"Count": Count})
-                write_yaml3({"FundCode": FundCode})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        clear_yaml3()
+                        clear_yaml5()
+                        FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                        Count = res.json()["Data"]["AssetCounts"]["HH"]
+                        write_yaml5({"Count": Count})
+                        write_yaml3({"FundCode": FundCode})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -275,8 +309,16 @@ class Test_redeem_Fund_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                AvailableShare_all = res.json()["Data"]["AvailableShare"]
-                write_yaml3({"AvailableShare_all": AvailableShare_all})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        AvailableShare_all = res.json()["Data"]["AvailableShare"]
+                        write_yaml3({"AvailableShare_all": AvailableShare_all})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -302,34 +344,43 @@ class Test_redeem_Fund_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                with allure.step('选择大于最小赎回的份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
-                    for i in range(5):
-                        try:
-                            if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > res.json()["Data"]["MinSh"]:
-                                assert True
-                                MinSh = res.json()["Data"]["MinSh"]
-                                MinHold = res.json()["Data"]["MinHold"]
-                                EnableSh = res.json()["Data"]["EnableSh"]
-                                if EnableSh == True:
-                                    if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
-                                        AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                                        ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                        Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
-                                        write_yaml3({"ShareId": ShareId})
-                                        write_yaml3({"AvailableShare": AvailableShare})
-                                        write_yaml3({"Vol": Vol})
-                                        break
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        with allure.step('选择大于最小赎回的份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                            for i in range(5):
+                                try:
+                                    if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > res.json()["Data"][
+                                        "MinSh"]:
+                                        assert True
+                                        MinSh = res.json()["Data"]["MinSh"]
+                                        MinHold = res.json()["Data"]["MinHold"]
+                                        EnableSh = res.json()["Data"]["EnableSh"]
+                                        if EnableSh == True:
+                                            if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
+                                                AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
+                                                ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                                Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
+                                                write_yaml3({"ShareId": ShareId})
+                                                write_yaml3({"AvailableShare": AvailableShare})
+                                                write_yaml3({"Vol": Vol})
+                                                break
+                                            else:
+                                                clear_yaml3()
+                                                assert False, '赎回后小于最低保留'
+                                        else:
+                                            assert False, '该基金暂停赎回'
                                     else:
                                         clear_yaml3()
-                                        assert False, '赎回后小于最低保留'
-                                else:
-                                    assert False, '该基金暂停赎回'
-                            else:
-                                clear_yaml3()
-                                assert False, '没有大于最小赎回的单卡可用份额'
-                        except IndexError:
-                            clear_yaml3()
-                            pass
+                                        assert False, '没有大于最小赎回的单卡可用份额'
+                                except IndexError:
+                                    clear_yaml3()
+                                    pass
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -441,12 +492,20 @@ class Test_Quick_redeem_Fund_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                clear_yaml3()
-                clear_yaml5()
-                FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
-                Count = res.json()["Data"]["AssetCounts"]["HH"]
-                write_yaml5({"Count": Count})
-                write_yaml3({"FundCode": FundCode})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        clear_yaml3()
+                        clear_yaml5()
+                        FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                        Count = res.json()["Data"]["AssetCounts"]["HH"]
+                        write_yaml5({"Count": Count})
+                        write_yaml3({"FundCode": FundCode})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -472,8 +531,16 @@ class Test_Quick_redeem_Fund_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                AvailableShare_all = res.json()["Data"]["AvailableShare"]
-                write_yaml3({"AvailableShare_all": AvailableShare_all})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        AvailableShare_all = res.json()["Data"]["AvailableShare"]
+                        write_yaml3({"AvailableShare_all": AvailableShare_all})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -499,39 +566,49 @@ class Test_Quick_redeem_Fund_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                with allure.step('选择大于最小赎回的份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
-                    for i in range(5):
-                        try:
-                            if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > res.json()["Data"]["MinSh"]:
-                                assert True
-                                MinSh = res.json()["Data"]["MinSh"]
-                                MinHold = res.json()["Data"]["MinHold"]
-                                Enable815 = res.json()["Data"]["Enable815"]
-                                EnableSh = res.json()["Data"]["EnableSh"]
-                                if EnableSh == True:
-                                    if Enable815 == True:
-                                        if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
-                                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                            Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
-                                            write_yaml3({"ShareId": ShareId})
-                                            write_yaml3({"AvailableShare": AvailableShare})
-                                            write_yaml3({"Vol": Vol})
-                                            break
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        with allure.step('选择大于最小赎回的份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                            for i in range(5):
+                                try:
+                                    if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > res.json()["Data"][
+                                        "MinSh"]:
+                                        assert True
+                                        MinSh = res.json()["Data"]["MinSh"]
+                                        MinHold = res.json()["Data"]["MinHold"]
+                                        Enable815 = res.json()["Data"]["Enable815"]
+                                        EnableSh = res.json()["Data"]["EnableSh"]
+                                        if EnableSh == True:
+                                            if Enable815 == True:
+                                                if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
+                                                    AvailableShare = res.json()["Data"]["Shares"][i - 1][
+                                                        "AvailableShare"]
+                                                    ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                                    Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
+                                                    write_yaml3({"ShareId": ShareId})
+                                                    write_yaml3({"AvailableShare": AvailableShare})
+                                                    write_yaml3({"Vol": Vol})
+                                                    break
+                                                else:
+                                                    clear_yaml3()
+                                                    assert False, '赎回后小于最低保留'
+                                            else:
+                                                clear_yaml3()
+                                                assert False, '该基金不支持815'
                                         else:
-                                            clear_yaml3()
-                                            assert False, '赎回后小于最低保留'
+                                            assert False, '该基金暂停赎回'
                                     else:
                                         clear_yaml3()
-                                        assert False, '该基金不支持815'
-                                else:
-                                    assert False, '该基金暂停赎回'
-                            else:
-                                clear_yaml3()
-                                assert False, '没有大于最小赎回的单卡可用份额'
-                        except IndexError:
-                            clear_yaml3()
-                            pass
+                                        assert False, '没有大于最小赎回的单卡可用份额'
+                                except IndexError:
+                                    clear_yaml3()
+                                    pass
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -645,12 +722,20 @@ class Test_Quick_redeem_Fund_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                clear_yaml3()
-                clear_yaml5()
-                FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
-                Count = res.json()["Data"]["AssetCounts"]["HH"]
-                write_yaml5({"Count": Count})
-                write_yaml3({"FundCode": FundCode})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        clear_yaml3()
+                        clear_yaml5()
+                        FundCode = res.json()["Data"]["AssetDetails"][g_key]["FundCode"]
+                        Count = res.json()["Data"]["AssetCounts"]["HH"]
+                        write_yaml5({"Count": Count})
+                        write_yaml3({"FundCode": FundCode})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -676,8 +761,16 @@ class Test_Quick_redeem_Fund_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                AvailableShare_all = res.json()["Data"]["AvailableShare"]
-                write_yaml3({"AvailableShare_all": AvailableShare_all})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        AvailableShare_all = res.json()["Data"]["AvailableShare"]
+                        write_yaml3({"AvailableShare_all": AvailableShare_all})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -703,39 +796,49 @@ class Test_Quick_redeem_Fund_Sub_NP():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                with allure.step('选择大于最小赎回的份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
-                    for i in range(5):
-                        try:
-                            if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > res.json()["Data"]["MinSh"]:
-                                assert True
-                                MinSh = res.json()["Data"]["MinSh"]
-                                MinHold = res.json()["Data"]["MinHold"]
-                                Enable815 = res.json()["Data"]["Enable815"]
-                                EnableSh = res.json()["Data"]["EnableSh"]
-                                if EnableSh == True:
-                                    if Enable815 == True:
-                                        if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
-                                            AvailableShare = res.json()["Data"]["Shares"][i - 1]["AvailableShare"]
-                                            ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
-                                            Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
-                                            write_yaml3({"ShareId": ShareId})
-                                            write_yaml3({"AvailableShare": AvailableShare})
-                                            write_yaml3({"Vol": Vol})
-                                            break
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        with allure.step('选择大于最小赎回的份额的ID'):  # 因为多卡才做的逻辑。这个接口没有排序也没有字段返回份额数量
+                            for i in range(5):
+                                try:
+                                    if res.json()["Data"]["Shares"][i - 1]["AvailableShare"] > res.json()["Data"][
+                                        "MinSh"]:
+                                        assert True
+                                        MinSh = res.json()["Data"]["MinSh"]
+                                        MinHold = res.json()["Data"]["MinHold"]
+                                        Enable815 = res.json()["Data"]["Enable815"]
+                                        EnableSh = res.json()["Data"]["EnableSh"]
+                                        if EnableSh == True:
+                                            if Enable815 == True:
+                                                if read_yaml3()["AvailableShare_all"] - MinSh - 0.01 > MinHold:
+                                                    AvailableShare = res.json()["Data"]["Shares"][i - 1][
+                                                        "AvailableShare"]
+                                                    ShareId = res.json()["Data"]["Shares"][i - 1]["ShareId"]
+                                                    Vol = res.json()["Data"]["MinSh"] + 0.01  # 。。有基金最小赎回是0的
+                                                    write_yaml3({"ShareId": ShareId})
+                                                    write_yaml3({"AvailableShare": AvailableShare})
+                                                    write_yaml3({"Vol": Vol})
+                                                    break
+                                                else:
+                                                    clear_yaml3()
+                                                    assert False, '赎回后小于最低保留'
+                                            else:
+                                                clear_yaml3()
+                                                assert False, '该基金不支持815'
                                         else:
-                                            clear_yaml3()
-                                            assert False, '赎回后小于最低保留'
+                                            assert False, '该基金暂停赎回'
                                     else:
                                         clear_yaml3()
-                                        assert False, '该基金不支持815'
-                                else:
-                                    assert False, '该基金暂停赎回'
-                            else:
-                                clear_yaml3()
-                                assert False, '没有大于最小赎回的单卡可用份额'
-                        except IndexError:
-                            clear_yaml3()
-                            pass
+                                        assert False, '没有大于最小赎回的单卡可用份额'
+                                except IndexError:
+                                    clear_yaml3()
+                                    pass
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 

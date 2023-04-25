@@ -29,6 +29,14 @@ class Test_SubAccount_details():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -50,6 +58,14 @@ class Test_SubAccount_details():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -71,6 +87,14 @@ class Test_SubAccount_details():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -97,6 +121,14 @@ class Test_SubAccount_DailyProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -120,6 +152,14 @@ class Test_SubAccount_DailyProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -146,6 +186,14 @@ class Test_SubAccount_MonthlyProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -169,6 +217,14 @@ class Test_SubAccount_MonthlyProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -192,6 +248,14 @@ class Test_SubAccount_MonthlyProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -215,6 +279,14 @@ class Test_SubAccount_MonthlyProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -239,6 +311,14 @@ class Test_SubAccount_SubAScoreInfo():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -260,6 +340,14 @@ class Test_SubAccount_SubAScoreInfo():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -281,6 +369,14 @@ class Test_SubAccount_SubAScoreInfo():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -306,6 +402,14 @@ class Test_SubAccount_SubAScoreInfo():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -329,6 +433,14 @@ class Test_SubAccount_SubAScoreInfo():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -352,6 +464,14 @@ class Test_SubAccount_SubAScoreInfo():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -376,6 +496,14 @@ class Test_SubAccount_SubAValuationProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -397,6 +525,14 @@ class Test_SubAccount_SubAValuationProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -423,6 +559,14 @@ class Test_SubAccount_Dividend():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -449,6 +593,14 @@ class Test_SubAccount_Dividend():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -471,6 +623,14 @@ class Test_SubAccount_Dividend():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -493,6 +653,14 @@ class Test_SubAccount_Dividend():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -519,6 +687,14 @@ class Test_SubAccount_SubAValuationProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -540,6 +716,14 @@ class Test_SubAccount_SubAValuationProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -561,5 +745,13 @@ class Test_SubAccount_SubAValuationProfit():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'

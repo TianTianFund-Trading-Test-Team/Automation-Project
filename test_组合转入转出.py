@@ -29,9 +29,17 @@ class Test_TransferShare_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                ShareId = res.json()["Data"]["SubAccounts"][0]["Details"][0]["ShareId"]
-                clear_yaml3()
-                write_yaml3({"ShareId": ShareId})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        ShareId = res.json()["Data"]["SubAccounts"][0]["Details"][0]["ShareId"]
+                        clear_yaml3()
+                        write_yaml3({"ShareId": ShareId})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -84,9 +92,17 @@ class Test_TransferShare_Sub():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                ShareId = res.json()["Data"]["SubAccounts"][0]["Details"][0]["ShareId"]
-                clear_yaml3()
-                write_yaml3({"ShareId": ShareId})
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        ShareId = res.json()["Data"]["SubAccounts"][0]["Details"][0]["ShareId"]
+                        clear_yaml3()
+                        write_yaml3({"ShareId": ShareId})
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
