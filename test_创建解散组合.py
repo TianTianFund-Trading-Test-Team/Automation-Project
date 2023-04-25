@@ -28,12 +28,20 @@ class Test_Create_and_Disband_SubAccount():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                IsValid = res.json()["Data"]["IsValid"]
-                ErrorMessage = res.json()["Data"]["ErrorMessage"]
-                with allure.step('名称是否正常'):
-                    if IsValid == True:
-                        assert True, '名称正常'
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        IsValid = res.json()["Data"]["IsValid"]
+                        ErrorMessage = res.json()["Data"]["ErrorMessage"]
+                        with allure.step('名称是否正常'):
+                            if IsValid == True:
+                                assert True, '名称正常'
+                            else:
+                                assert False, ErrorMessage
                     else:
+                        clear_yaml3()
                         assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
@@ -52,16 +60,25 @@ class Test_Create_and_Disband_SubAccount():
             "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
         }
         res = requests.request(method='post', url=url, params=datas)
-        IsValid = res.json()["Data"]["IsValid"]
-        ErrorMessage = res.json()["Data"]["ErrorMessage"]
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
-                with allure.step('名称是否正常'):
-                    if IsValid == True:
-                        assert True, '名称正常'
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                        with allure.step('名称是否正常'):
+                            IsValid = res.json()["Data"]["IsValid"]
+                            ErrorMessage1 = res.json()["Data"]["ErrorMessage"]
+                            if IsValid == True:
+                                assert True, '名称正常'
+                            else:
+                                assert False, ErrorMessage1
                     else:
+                        clear_yaml3()
                         assert False, ErrorMessage
+
             else:
                 assert False, '接口状态码非200'
 
@@ -81,6 +98,14 @@ class Test_Create_and_Disband_SubAccount():
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
+                with allure.step('接口是否返回正常'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
             else:
                 assert False, '接口状态码非200'
 
@@ -102,12 +127,12 @@ class Test_Create_and_Disband_SubAccount():
             "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
         }
         res = requests.request(method='post', url=url, params=datas)
-        ErrorCode = res.json()["ErrorCode"]
-        ErrorMessage = res.json()["ErrorMessage"]
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
                 with allure.step('组合是否创建成功'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
                     if ErrorCode == 0:
                         assert True, '创建组合成功'
                         subAccountNo = res.json()["Data"]["SubAccountNo"]
@@ -141,11 +166,11 @@ class Test_Create_and_Disband_SubAccount():
                 "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
             }
             res = requests.request(method='post', url=url, params=datas)
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
                     with allure.step('修改组合名称是否成功'):
                         if ErrorCode == 0:
                             assert True, '修改组合名称成功'
@@ -176,11 +201,11 @@ class Test_Create_and_Disband_SubAccount():
                 "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
             }
             res = requests.request(method='post', url=url, params=datas)
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
                     with allure.step('修改组合标签是否成功'):
                         if ErrorCode == 0:
                             assert True, '修改组合标签成功'
@@ -211,11 +236,11 @@ class Test_Create_and_Disband_SubAccount():
                 "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
             }
             res = requests.request(method='post', url=url, params=datas)
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
                     with allure.step('修改组合风格是否成功'):
                         if ErrorCode == 0:
                             assert True, '修改组合风格成功'
@@ -246,11 +271,11 @@ class Test_Create_and_Disband_SubAccount():
                 "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
             }
             res = requests.request(method='post', url=url, params=datas)
-            ErrorCode = res.json()["ErrorCode"]
-            ErrorMessage = res.json()["ErrorMessage"]
             with allure.step('接口是否正常调通'):
                 if res.status_code == 200:
                     assert True
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
                     with allure.step('修改组合投资理念是否成功'):
                         if ErrorCode == 0:
                             assert True, '修改组合投资理念成功'
@@ -311,12 +336,12 @@ class Test_Create_and_Disband_SubAccount():
             "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
         }
         res = requests.request(method='post', url=url, params=datas)
-        ErrorCode = res.json()["ErrorCode"]
-        ErrorMessage = res.json()["ErrorMessage"]
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
                 with allure.step('组合是否创建成功'):
+                    ErrorCode = res.json()["ErrorCode"]
+                    ErrorMessage = res.json()["ErrorMessage"]
                     if ErrorCode == 0:
                         assert True, '创建组合成功'
                         subAccountNo = res.json()["Data"]["SubAccountNo"]
