@@ -4,9 +4,10 @@
 #参数要加双引号！！！
 
 
-Env: "host9"
-Acc: "Account9"
-Pas: "Password9"
+Env: "host3"
+Env_Tquery: "Tquery3"  #交易查询 目前只有线上
+Acc: "Account3"
+Pas: "Password3"
 
 
 
@@ -43,7 +44,7 @@ Idea: "什么鬼" #修改投资理念 随便填。
 #等比例卖出(尽量0.05以上）
 #Tyoe 回银行卡 1   回活期宝 2
 # 选择银行卡 把 FundCode_HQB_ZHM 置为空！！！！
-Percent: 0.3
+Percent: 0.5
 Type: 1
 FundCode_HQB_ZHM: ""
 
