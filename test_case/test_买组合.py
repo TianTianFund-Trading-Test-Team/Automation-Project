@@ -9,7 +9,7 @@ import allure
 from conftest import read_yaml2, write_yaml2, write_yaml3, read_yaml3, clear_yaml3, read_yaml1, read_yaml4
 
 
-@allure.feature('买组合 660以下输入密码')
+@allure.feature('活期宝买组合 660以下输入密码')
 class Test_buy_Sub():
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕
@@ -36,7 +36,7 @@ class Test_buy_Sub():
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/CommitOrderCus")
         datas = {
             "Password": read_yaml1()[read_yaml4()["Pas"]],
-            "TradeType": read_yaml4()["TradeType_Sub"],
+            "TradeType": "HQBX022-ZH",
             "UserId": read_yaml2()["CustomerNo"],
             "BankAccountNo": read_yaml2()["BankAccountNo"],
             "CouponsType": "",
@@ -103,6 +103,7 @@ class Test_buy_Sub():
         }
 
         res = requests.request(method='post', url=url, params=datas)
+        time.sleep(3)  # 交易结果有延迟
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
@@ -139,7 +140,7 @@ class Test_buy_Sub():
                 "BusinId": read_yaml3()["AppSheetSerialNo"],
                 "BusinType": read_yaml3()["BusinType"],
                 "IsRevokedToCashBag": "false",
-                "DisplayBusinType": read_yaml3()["BusinType"],
+                "DisplayBusinType": 8191,
 
                 "PhoneType": "IPhone",
                 "ServerVersion": "6.5.8",
@@ -153,7 +154,7 @@ class Test_buy_Sub():
                     assert True
                     ErrorCode = res.json()["ErrorCode"]
                     ErrorMessage = res.json()["ErrorMessage"]
-                    with allure.step('买基金到组合撤单是否成功'):
+                    with allure.step('买组合撤单是否成功'):
                         if ErrorCode == 0:
                             assert True, '撤单受理成功'
                         else:
@@ -162,7 +163,7 @@ class Test_buy_Sub():
                     assert False, '接口状态码非200'
 
 
-@allure.feature('买组合 660以下免密')
+@allure.feature('银行卡买组合 660以下免密')
 class Test_buy_Sub_NP():
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕
@@ -184,13 +185,13 @@ class Test_buy_Sub_NP():
             else:
                 assert False, '接口状态码非200'
 
-    @allure.story('买组合 /User/SubA/CommitOrderCusNP')
+    @allure.story('银行卡买组合 免密 /User/SubA/CommitOrderCusNP')
     # 买组合 660以下免密
     def test_User_SubA_CommitOrderCusNP(self):
         time.sleep(2)  # 防止报”请勿重复提交“
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/SubA/CommitOrderCusNP")
         datas = {
-            "TradeType": read_yaml4()["TradeType_Sub"],
+            "TradeType": "CX022-ZH",
             "UserId": read_yaml2()["CustomerNo"],
             "BankAccountNo": read_yaml2()["BankAccountNo"],
             "CouponsType": "",
@@ -258,6 +259,7 @@ class Test_buy_Sub_NP():
         }
 
         res = requests.request(method='post', url=url, params=datas)
+        time.sleep(3)  # 交易结果有延迟
         with allure.step('接口是否正常调通'):
             if res.status_code == 200:
                 assert True
@@ -280,7 +282,7 @@ class Test_buy_Sub_NP():
             else:
                 assert False, '接口状态码非200'
 
-    @allure.story('买组合撤单 免密 /Trade/FundTrade/RevokeOrderNP')
+    @allure.story('银行卡买组合撤单 免密 /Trade/FundTrade/RevokeOrderNP')
     # 买组合撤单 免密
     def test_Trade_FundTrade_RevokeOrderNP(self):
         if read_yaml3()["Succeed"] == False:
@@ -294,7 +296,7 @@ class Test_buy_Sub_NP():
                 "BusinId": read_yaml3()["AppSheetSerialNo"],
                 "BusinType": read_yaml3()["BusinType"],
                 "IsRevokedToCashBag": "false",
-                "DisplayBusinType": read_yaml3()["BusinType"],
+                "DisplayBusinType": 8191,
 
                 "PhoneType": "IPhone",
                 "ServerVersion": "6.5.8",
@@ -308,7 +310,7 @@ class Test_buy_Sub_NP():
                     assert True
                     ErrorCode = res.json()["ErrorCode"]
                     ErrorMessage = res.json()["ErrorMessage"]
-                    with allure.step('买基金到组合撤单是否成功'):
+                    with allure.step('买组合撤单是否成功'):
                         if ErrorCode == 0:
                             assert True, '撤单受理成功'
                         else:

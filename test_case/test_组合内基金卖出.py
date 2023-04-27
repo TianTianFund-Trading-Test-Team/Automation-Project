@@ -22,7 +22,7 @@ def modify_g_key():
         assert False, '组合内基金都不满足卖出条件'
 
 
-@allure.feature('组合内基金普通卖出 24')
+@allure.feature('组合内基金普通卖出回活期宝 24')
 class Test_redeem_Fund_Sub():
     @allure.story('子账户持仓 /User/Asset/GetFundAssetListOfSubV2')
     # 获取子账户持仓 混合型
@@ -160,7 +160,7 @@ class Test_redeem_Fund_Sub():
             else:
                 assert False, '接口状态码非200'
 
-    @allure.story('卖组合单基金 /Business/hqb/MakeRedemption')
+    @allure.story('卖组合单基金回活期宝 /Business/hqb/MakeRedemption')
     # 卖组合单基金
     def test_Business_hqb_MakeRedemption(self):
         if read_yaml3() is None:
@@ -175,11 +175,11 @@ class Test_redeem_Fund_Sub():
                 "Password": read_yaml1()[read_yaml4()["Pas"]],
                 "CustomerNo": "",
                 "UserId": read_yaml2()["CustomerNo"],
-                "PayType": read_yaml4()["PayType"],
+                "PayType": "cash",
                 "Vol": read_yaml3()["Vol"],
                 "ShareID": read_yaml3()["ShareId"],
                 "RedemptionFlag": "1",
-                "RechargeCashBagFundCode": read_yaml4()["FundCode_HQB"],  # 活期宝基金
+                "RechargeCashBagFundCode": "004545",  # 活期宝基金
                 "IsQuickToCashBag": "false",
                 "FldParam": "",
                 "SubAccountNo": read_yaml2()["SubAccountNo"],
@@ -211,8 +211,8 @@ class Test_redeem_Fund_Sub():
                 else:
                     assert False, '接口状态码非200'
 
-    @allure.story('买组合撤单 免密 /Trade/FundTrade/RevokeOrder')
-    # 买组合撤单 免密
+    @allure.story('组合内基金卖出撤单 免密 /Trade/FundTrade/RevokeOrder')
+    # 组合内基金卖出撤单 免密
     def test_Trade_FundTrade_RevokeOrder(self):
         if read_yaml3() is None or read_yaml3()["Succeed"] == False:
             pytest.skip(), '买基金失败无法撤单'
@@ -248,7 +248,7 @@ class Test_redeem_Fund_Sub():
                     assert False, '接口状态码非200'
 
 
-@allure.feature('组合内基金普通卖出 免密 24')
+@allure.feature('组合内基金普通卖出回银行卡 免密 24')
 class Test_redeem_Fund_Sub_NP():
     @allure.story('子账户持仓 /User/Asset/GetFundAssetListOfSubV2')
     # 获取子账户持仓 混合型
@@ -384,7 +384,7 @@ class Test_redeem_Fund_Sub_NP():
             else:
                 assert False, '接口状态码非200'
 
-    @allure.story('卖组合单基金 免密 /Business/hqb/MakeRedemptionNP')
+    @allure.story('卖组合单基金回银行卡 免密 /Business/hqb/MakeRedemptionNP')
     # 卖组合单基金 免密
     def test_Business_hqb_MakeRedemptionNP(self):
         if read_yaml3() is None:
@@ -399,11 +399,11 @@ class Test_redeem_Fund_Sub_NP():
             datas = {
                 "CustomerNo": "",
                 "UserId": read_yaml2()["CustomerNo"],
-                "PayType": read_yaml4()["PayType"],
+                "PayType": "card",
                 "Vol": read_yaml3()["Vol"],
                 "ShareID": read_yaml3()["ShareId"],
                 "RedemptionFlag": "1",
-                "RechargeCashBagFundCode": read_yaml4()["FundCode_HQB"],
+                "RechargeCashBagFundCode": "",
                 "IsQuickToCashBag": "false",
                 "FldParam": "",
                 "SubAccountNo": read_yaml2()["SubAccountNo"],
@@ -435,7 +435,7 @@ class Test_redeem_Fund_Sub_NP():
                     assert False, '接口状态码非200'
 
     @allure.story('组合内基金卖出撤单 免密 /Trade/FundTrade/RevokeOrderNP')
-    # 买组合撤单 免密
+    # 组合内基金卖出撤单 免密
     def test_Trade_FundTrade_RevokeOrderNP(self):
         if read_yaml3() is None or read_yaml3()["Succeed"] == False:
             pytest.skip(), '买基金失败无法撤单'

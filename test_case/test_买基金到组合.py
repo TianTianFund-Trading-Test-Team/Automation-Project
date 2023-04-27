@@ -9,7 +9,7 @@ import allure
 from conftest import read_yaml2, write_yaml2, write_yaml3, read_yaml3, clear_yaml3, read_yaml1, read_yaml4
 
 
-@allure.feature('买基金到组合 660以下输入密码')
+@allure.feature('活期宝买基金到组合 660以下输入密码')
 class Test_buy_fund_to_Sub():
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕
@@ -30,13 +30,13 @@ class Test_buy_fund_to_Sub():
             else:
                 assert False, '接口状态码非200'
 
-    @allure.story('买基金到组合 /Trade/FundTrade/CommitOrder')
+    @allure.story('活期宝买基金到组合 /Trade/FundTrade/CommitOrder')
     # 买基金到组合 660以下输密码
     def test_Trade_FundTrade_CommitOrder(self):
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/CommitOrder")
         datas = {
             "Password": read_yaml1()[read_yaml4()["Pas"]],
-            "TradeType": read_yaml4()["TradeType"],
+            "TradeType": "AsyJCJY022",  # 活期宝
             "UserId": read_yaml2()["CustomerNo"],
             "BankAccountNo": read_yaml2()["BankAccountNo"],
             "CouponsType": "",
@@ -156,7 +156,7 @@ class Test_buy_fund_to_Sub():
                     assert False, '接口状态码非200'
 
 
-@allure.feature('买基金到组合 660以下免密')
+@allure.feature('银行卡买基金到组合 660以下免密')
 class Test_buy_fund_to_Sub_NP():
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕
@@ -177,12 +177,12 @@ class Test_buy_fund_to_Sub_NP():
             else:
                 assert False, '接口状态码非200'
 
-    @allure.story('买基金到组合免密 /Trade/FundTrade/CommitOrderNP')
+    @allure.story('银行卡买基金到组合免密 /Trade/FundTrade/CommitOrderNP')
     # 买基金到组合 660以下免密
     def test_Trade_FundTrade_CommitOrder(self):
         url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Trade/FundTrade/CommitOrderNP")
         datas = {
-            "TradeType": read_yaml4()["TradeType"],
+            "TradeType": "AsyC022",  # 银行卡
             "UserId": read_yaml2()["CustomerNo"],
             "BankAccountNo": read_yaml2()["BankAccountNo"],
             "CouponsType": "",
@@ -211,7 +211,7 @@ class Test_buy_fund_to_Sub_NP():
                 assert True
                 ErrorCode = res.json()["ErrorCode"]
                 ErrorMessage = res.json()["ErrorMessage"]
-                with allure.step('买基金到组合请求成功'):
+                with allure.step('银行卡买基金到组合请求成功'):
                     if ErrorCode == 0:
                         assert True
                         AppSerialNo = res.json()["Data"]["AppSerialNo"]
@@ -300,4 +300,3 @@ class Test_buy_fund_to_Sub_NP():
                             assert False, ErrorMessage
                 else:
                     assert False, '接口状态码非200'
-
