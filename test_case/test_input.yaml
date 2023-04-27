@@ -1,0 +1,60 @@
+#Env 选择测试环境 Host2 为线上2分区  host5 为公测5分区  _host7 为内测7分区  没有11分区！！
+#Acc 账号 和环境同步
+#Pas 密码 和环境同步
+#参数要加双引号！！！
+
+
+Env: "host3"
+Env_Tquery: "Tquery3"  #交易查询 目前只有线上
+Acc: "Account3"
+Pas: "Password3"
+
+
+
+#买基金
+#银行卡  AsyC022
+#活期宝  AsyJCJY022
+TradeType: "AsyJCJY022"
+#买基金需要的参数 fundCode 基金代码  amount 购买金额
+#基金代码 非高端理财，短期理财
+FundAppsJson: "[{\"fundCode\":\"000001\",\"amount\":\"10.00\"}]"
+
+
+
+#买组合
+#银行卡  CX022-ZH
+#活期宝  HQBX022-ZH
+TradeType_Sub: "HQBX022-ZH"
+#输入金额
+Amount: "100.00"
+
+
+
+#创建组合
+#输入名称
+#前端限制至少2汉字/4个英文或数字；最多8个汉字/16个英文或数字！！！
+Name: "测试创建组合"
+Name_EX: "测试修改名称"  #修改名称用
+Property: P2 #修改组合标签 P2,P3,P4,P8(默认创建了P1）
+Style: S1 #修改风格 S1,S3(默认创建了S2）
+Idea: "什么鬼" #修改投资理念 随便填。
+
+
+#组合卖出 818 828
+#等比例卖出(尽量0.05以上）
+#Tyoe 回银行卡 1   回活期宝 2
+# 选择银行卡 把 FundCode_HQB_ZHM 置为空！！！！
+Percent: 0.5
+Type: 1
+FundCode_HQB_ZHM: ""
+
+
+#卖基金 24
+# cash 回活期宝   card 回银行卡
+# 选择银行卡 把FundCode_HQB 置为空！！！！
+PayType: "cash"
+FundCode_HQB: "003474"
+
+#组合转入转出853
+Vols: 1
+
