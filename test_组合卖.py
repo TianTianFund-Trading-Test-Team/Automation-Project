@@ -146,7 +146,7 @@ class Test_redeem_Sub():
                     assert True
                     ErrorCode = res.json()["ErrorCode"]
                     ErrorMessage = res.json()["ErrorMessage"]
-                    with allure.step('超级转换撤单是否成功'):
+                    with allure.step('组合卖撤单是否成功'):
                         if ErrorCode == 0:
                             assert True, '撤单受理成功'
                         else:
@@ -291,7 +291,7 @@ class Test_redeem_Sub_NP():
                     assert True
                     ErrorCode = res.json()["ErrorCode"]
                     ErrorMessage = res.json()["ErrorMessage"]
-                    with allure.step('超级转换撤单是否成功'):
+                    with allure.step('组合卖撤单是否成功'):
                         if ErrorCode == 0:
                             assert True, '撤单受理成功'
                         else:
