@@ -1,6 +1,7 @@
 from string import Template
 from urllib.parse import urljoin
 
+import allure
 import pytest
 import requests
 import json
@@ -92,13 +93,25 @@ def get_cToken():
         "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
     }
     res = requests.request(method='post', url=url, params=datas)
-    cToken = res.json()["Data"]
-    write_yaml2({"cToken": cToken})
+    with allure.step('接口是否正常调通'):
+        if res.status_code == 200:
+            assert True
+            with allure.step('接口是否返回正常'):
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                if ErrorCode == 0:
+                    assert True
+                    cToken = res.json()["Data"]
+                    write_yaml2({"cToken": cToken})
+                else:
+                    assert False, ErrorMessage
+        else:
+            assert False, '接口状态码非200'
 
 
 # 获取CustomerNo，CToken,UToken
 @pytest.fixture(scope="session", autouse=True)
-def get_z_CUToken():
+def get_c_CUToken():
     url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/User/Account/LoginForMobileReturnContextId")
     datas = {
         "Account": read_yaml1()[read_yaml4()["Acc"]],
@@ -117,12 +130,24 @@ def get_z_CUToken():
         "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
     }
     res = requests.request(method='post', url=url, params=datas)
-    CToken = res.json()["Data"]["CToken"]
-    UToken = res.json()["Data"]["UToken"]
-    CustomerNo = res.json()["Data"]["CustomerNo"]
-    write_yaml2({"CToken": CToken})
-    write_yaml2({"UToken": UToken})
-    write_yaml2({"CustomerNo": CustomerNo})
+    with allure.step('接口是否正常调通'):
+        if res.status_code == 200:
+            assert True
+            with allure.step('接口是否返回正常'):
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                if ErrorCode == 0:
+                    assert True
+                    CToken = res.json()["Data"]["CToken"]
+                    UToken = res.json()["Data"]["UToken"]
+                    CustomerNo = res.json()["Data"]["CustomerNo"]
+                    write_yaml2({"CToken": CToken})
+                    write_yaml2({"UToken": UToken})
+                    write_yaml2({"CustomerNo": CustomerNo})
+                else:
+                    assert False, ErrorMessage
+        else:
+            assert False, '接口状态码非200'
 
 
 # 获取第一张银行卡号 BankCardNo, BankAccountNo
@@ -138,10 +163,23 @@ def get_z_z_BankCardNo():
         "UToken": read_yaml2()["UToken"]
     }
     res = requests.request(method='post', url=url, params=datas)
-    BankCardNo = res.json()["Data"]["CashBagBankCardList"][0]["BankCardNo"]
-    BankAccountNo = res.json()["Data"]["CashBagBankCardList"][0]["AccountNo"]
-    write_yaml2({"BankCardNo": BankCardNo})
-    write_yaml2({"BankAccountNo": BankAccountNo})
+    with allure.step('接口是否正常调通'):
+        if res.status_code == 200:
+            assert True
+            with allure.step('接口是否返回正常'):
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                if ErrorCode == 0:
+                    assert True
+                    BankCardNo = res.json()["Data"]["CashBagBankCardList"][0]["BankCardNo"]
+                    BankAccountNo = res.json()["Data"]["CashBagBankCardList"][0]["AccountNo"]
+                    write_yaml2({"BankCardNo": BankCardNo})
+                    write_yaml2({"BankAccountNo": BankAccountNo})
+
+                else:
+                    assert False, ErrorMessage
+        else:
+            assert False, '接口状态码非200'
 
 
 # 获取 SubAccountNo
@@ -158,5 +196,18 @@ def get_z_SubAccountNo():
         "UToken": read_yaml2()["UToken"]
     }
     res = requests.request(method='post', url=url, params=datas)
-    SubAccountNo = res.json()["Data"]["ListGroup"][0]["SubAccountNo"]
-    write_yaml2({"SubAccountNo": SubAccountNo})
+    with allure.step('接口是否正常调通'):
+        if res.status_code == 200:
+            assert True
+            with allure.step('接口是否返回正常'):
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                if ErrorCode == 0:
+                    assert True
+                    SubAccountNo = res.json()["Data"]["ListGroup"][0]["SubAccountNo"]
+                    write_yaml2({"SubAccountNo": SubAccountNo})
+                else:
+                    clear_yaml2()
+                    assert False, ErrorMessage
+        else:
+            assert False, '接口状态码非200'
