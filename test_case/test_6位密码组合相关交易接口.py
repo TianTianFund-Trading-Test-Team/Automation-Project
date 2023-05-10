@@ -64,7 +64,7 @@ def modify_c_key():
 
 
 @allure.feature('活期宝买基金到组合 6位密码')
-class Test_buy_fund_to_Sub():
+class Test_buy_fund_to_Sub_L2():
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕
     def test_Business_home_NoticeStayTrace(self):
@@ -219,7 +219,7 @@ class Test_buy_fund_to_Sub():
 
 
 @allure.feature('活期宝买组合 6位密码')
-class Test_buy_Sub():
+class Test_buy_Sub_L2():
     @allure.story('交易留痕 /Business/home/NoticeStayTrace')
     # 交易留痕
     def test_Business_home_NoticeStayTrace(self):
@@ -378,7 +378,7 @@ class Test_buy_Sub():
 
 
 @allure.feature('创建解散组合 6位密码')
-class Test_Create_and_Disband_SubAccount():
+class Test_Create_and_Disband_SubAccount_L2():
     @allure.story('验证名称是否正常 /user/suba/VerifyName')
     # 验证名称
     def test_User_suba_VerifyName(self):
@@ -692,7 +692,7 @@ class Test_Create_and_Disband_SubAccount():
 
 
 @allure.feature('组合内QD基金 890  6位密码')
-class Test_redeem_QDFund_Sub():
+class Test_redeem_QDFund_Sub_L2():
     @allure.story('持仓详情 003333 /User/home/GetShareDetail')
     # 获取003333起购金额
     def test_User_home_GetShareDetail_003333(self):
@@ -1060,7 +1060,7 @@ class Test_redeem_QDFund_Sub():
 
 
 @allure.feature('组合内基金普通卖出回活期宝 24 6位密码')
-class Test_redeem_Fund_Sub():
+class Test_redeem_Fund_Sub_L2():
     @allure.story('子账户持仓 /User/Asset/GetFundAssetListOfSubV2')
     # 获取子账户持仓 混合型
     def test_User_Asset_GetFundAssetListOfSubV2(self):
@@ -1291,7 +1291,7 @@ class Test_redeem_Fund_Sub():
 
 
 @allure.feature('组合内基金卖出极速回活期宝 815 6位密码')
-class Test_Quick_redeem_Fund_Sub():
+class Test_Quick_redeem_Fund_Sub_L2():
     @allure.story('子账户持仓 /User/Asset/GetFundAssetListOfSubV2')
     # 获取子账户持仓 混合型
     def test_User_Asset_GetFundAssetListOfSubV2(self):
@@ -1526,7 +1526,7 @@ class Test_Quick_redeem_Fund_Sub():
 
 
 @allure.feature('组合内基金超级转换 815 6位密码')
-class Test_CJZH_Sub():
+class Test_CJZH_Sub_L2():
     @allure.story('持仓详情 003333 /User/home/GetShareDetail')
     # 获取003333起购金额
     def test_User_home_GetShareDetail_003333(self):
@@ -1891,7 +1891,7 @@ class Test_CJZH_Sub():
 
 
 @allure.feature('组合内基金基金转换 36 6位密码')
-class Test_JJZH_Sub():
+class Test_JJZH_Sub_L2():
     @allure.story('子账户持仓 /User/Asset/GetFundAssetListOfSubV2')
     # 获取子账户持仓 HH型
     def test_User_Asset_GetFundAssetListOfSubV2(self):
@@ -2313,7 +2313,7 @@ class Test_JJZH_Sub():
 
 
 @allure.feature('组合卖出 6位密码 ')
-class Test_redeem_Sub():
+class Test_redeem_Sub_L2():
     @allure.story('获取组合内份额 /User/SubA/SubARatioRedeemOverviewV2')
     # 获取组合内份额
     def test_User_SubA_SubARatioRedeemOverviewV2(self):
@@ -2461,3 +2461,77 @@ class Test_redeem_Sub():
                     assert False, '接口状态码非200'
             self.test_api_mobile_Query_GetQueryInfosQuickUse()
             self.test_Trade_FundTrade_RevokeOrder()
+
+
+@allure.feature('买基金到组合 汇款支付 6位密码')
+class Test_UnifiedBuy_fund_to_Sub_L2():
+    @allure.story('交易留痕 /Business/home/NoticeStayTrace')
+    # 交易留痕
+    def test_Business_home_NoticeStayTrace(self):
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Business/home/NoticeStayTrace")
+        datas = {
+            "UserId": read_yaml2()["CustomerNo"],
+            "FundCode": "null",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"]
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+                TraceID = res.json()["Data"]["TraceID"]
+                write_yaml3({"TraceID": TraceID})
+            else:
+                assert False, '接口状态码非200'
+
+    @allure.story('买基金到组合 汇款支付 6位密码 /Business/Home/UnifiedBuyFundL2')
+    # 买基金到组合 660以下免密
+    def test_Business_Home_UnifiedBuyFundNP(self):
+        get_L2Password.user_Register_Secu(self)
+        get_L2Password.DES_decrypto(self)
+        get_L2Password.rsa_encrypto(self)
+        url = urljoin(read_yaml1()[read_yaml4()["Env"]], "/Business/Home/UnifiedBuyFundL2")
+        datas = {
+            "L2Password": read_yaml3()["L2Password"],
+            "SecuId": "feefd4d8095a4dc3b31863dfb71dde3f",  # 固定的
+            "EncryptStr": "",
+            "IsPayPlus": "0",
+            "CouponsType": "",
+            "CouponsId": "",
+            "CustomerNo": read_yaml2()["CustomerNo"],
+            "UserId": read_yaml2()["CustomerNo"],
+            "BankAccountNo": read_yaml2()["BankAccountNo"],
+            "FundCode": "000001",
+            "Amount": 1000.00,
+            "AmountList": "",
+            "ChargeType": "",
+            "PayWay": "bank",
+            "TraceID": read_yaml3()["TraceID"],
+            "RecommanderNo": "",
+            "SubAccountNo": read_yaml2()["SubAccountNo"],
+            "FollowingSubAccountNo": "",
+            "IsSubAPlanB": "false",
+            "Remittance": "true",
+            "FldParam": "",
+            "RatioRefundType": "",
+
+            "PhoneType": "IPhone",
+            "ServerVersion": "6.5.8",
+            "CToken": read_yaml2()["CToken"],
+            "UToken": read_yaml2()["UToken"],
+            "MobileKey": "01F12605-0E93-4BCB-AD67-D46C1DDA604B"
+        }
+        res = requests.request(method='post', url=url, params=datas)
+        with allure.step('接口是否正常调通'):
+            if res.status_code == 200:
+                assert True
+                ErrorCode = res.json()["ErrorCode"]
+                ErrorMessage = res.json()["ErrorMessage"]
+                with allure.step('买基金到组合汇款支付请求成功'):
+                    if ErrorCode == 0:
+                        assert True
+                    else:
+                        clear_yaml3()
+                        assert False, ErrorMessage
+            else:
+                assert False, '接口状态码非200'
