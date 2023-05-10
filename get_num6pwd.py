@@ -3,6 +3,7 @@ from urllib.parse import urljoin
 
 import execjs
 import requests
+from _pytest import unittest
 
 from conftest import read_yaml3, write_yaml3, read_yaml1, read_yaml4, read_yaml2
 
@@ -59,7 +60,7 @@ class get_L2Password():
 
     # DES 解密  获得公钥PubKey
     def DES_decrypto(self):
-        ctx = execjs.compile(DES_js, cwd=r"D:/WKR/pythonProject/node_modules")  # JS库绝对路径
+        ctx = execjs.compile(DES_js, cwd=r"E:/Python/pythonProject/node_modules")  # JS库绝对路径
 
         key = "YTXbqLrTsblP9yfphkKZ*fYQmzcez%Ga"  # 32位随机
         message = read_yaml3()["key"]  # 请求Secu返回的加密公钥
@@ -71,7 +72,7 @@ class get_L2Password():
 
     # RSA 加密  得到L2Password
     def rsa_encrypto(self):
-        ctx = execjs.compile(RSA_js, cwd=r"D:/WKR/pythonProject/node_modules")
+        ctx = execjs.compile(RSA_js, cwd=r"E:/Python/pythonProject/node_modules")
         str_time = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))  # 真实时间
         content = "123321" + "|" + str_time  # 交易密码默认123321
         # 使用execjs执行RSA加密
